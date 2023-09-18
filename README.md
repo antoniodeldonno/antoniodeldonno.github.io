@@ -23,7 +23,7 @@
 <body>
     <header>
         <h1>Welcome to my personal page</h1>
-        <img src="profile_picture.jpg" alt="My profile picture">
+        <img src="profile_picture.jpeg" alt="My profile picture">
     </header>
     
     <section>
