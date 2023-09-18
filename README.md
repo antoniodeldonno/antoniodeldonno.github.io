@@ -13,21 +13,31 @@
     </header>
     
     <section>
-        <h2>About me</h2>
-        <p>Website under building...</p>
+        <h2>Curriculum</h2>
+        <p>Aggiungi qui il tuo curriculum e le informazioni sulla tua formazione e esperienza professionale.</p>
     </section>
 
     <section>
-        <h2>Some pictures</h2>
-        <div class="gallery">
-            <img src="foto1.jpg" alt="Descrizione della foto 1">
-            <img src="foto2.jpg" alt="Descrizione della foto 2">
-            <!-- Aggiungi altre foto qui -->
-        </div>
+        <h2>Lezioni Private</h2>
+        <h3>Matematica, Fisica e Chimica</h3>
+        <p>Offro lezioni private di matematica, fisica e chimica. Contattami per maggiori dettagli.</p>
+        
+        <h3>Chitarra, Teoria Musicale, Produzione Musicale</h3>
+        <p>Impara a suonare la chitarra, approfondisci la teoria musicale o scopri il mondo della produzione musicale con le mie lezioni private.</p>
+    </section>
+
+    <section>
+        <h2>Produzione, Mixing e Mastering</h2>
+        <p>Offro servizi di produzione musicale, mixing e mastering per artisti e musicisti. Contattami per ulteriori informazioni.</p>
+    </section>
+
+    <section>
+        <h2>Fotografia</h2>
+        <p>Esplora il mio portfolio fotografico e scopri le mie passioni nel mondo della fotografia.</p>
     </section>
 
     <footer>
-        <p>Contattami all'indirizzo email: [a.deldonno94@gmail.com]</p>
+        <p>Contattami all'indirizzo email: [tuo@email.com]</p>
     </footer>
 </body>
 </html>
