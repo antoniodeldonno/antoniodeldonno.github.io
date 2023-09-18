@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Personal Page</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Aggiungi queste regole CSS per rendere il testo nelle sezioni nero */
+        section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: white;
+            color: black; /* Colore del testo nero */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Stile specifico per gli header delle sezioni */
+        section h2 {
+            color: black; /* Colore del testo nero */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -13,7 +28,7 @@
     </header>
     
     <section>
-        <h2>Curriculum Vitae</h2>
+        <h2>About me</h2>
         <p>Add your curriculum vitae and information about your education and professional experience here.</p>
     </section>
 
@@ -41,6 +56,7 @@
     </footer>
 </body>
 </html>
+
 
 
     <footer>
