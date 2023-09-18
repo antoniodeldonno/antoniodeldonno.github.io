@@ -1,8 +1,20 @@
-/* Stili di base */
-body {
-    font-family: Arial, sans-serif;
+/* Reset CSS per reimpostare i margini e i padding di default */
+body, h1, h2, p, ul, li {
     margin: 0;
     padding: 0;
+}
+
+/* Stile globale */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000; /* Sfondo nero */
+    color: #fff; /* Testo bianco */
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 header {
@@ -10,22 +22,36 @@ header {
     color: white;
     text-align: center;
     padding: 20px;
+    border-bottom: 5px solid #ffcc00;
+}
+
+header h1 {
+    font-size: 36px;
 }
 
 header img {
     max-width: 100%;
     border-radius: 50%;
     margin-top: 20px;
+    border: 5px solid white;
 }
 
 section {
-    max-width: 800px;
-    margin: 20px auto;
+    margin: 20px 0;
     padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
     font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.5;
 }
 
 .gallery {
@@ -35,8 +61,14 @@ h2 {
 }
 
 .gallery img {
-    max-width: 48%;
-    margin-bottom: 10px;
+    max-width: 100%;
+    margin-bottom: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+.gallery img:hover {
+    transform: scale(1.1);
 }
 
 footer {
@@ -44,6 +76,18 @@ footer {
     color: white;
     text-align: center;
     padding: 10px;
+    border-top: 5px solid #ffcc00;
+}
+
+/* Stili specifici per il link di contatto */
+footer a {
+    color: #ffcc00;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+footer a:hover {
+    color: #fff;
 }
 
 /* Stili personalizzati aggiunti qui */
