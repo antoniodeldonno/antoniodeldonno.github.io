@@ -3,38 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Mia Pagina Personale</title>
+    <title>My Personal Page</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Benvenuti sulla mia pagina personale</h1>
-        <img src="immagine_profilo.jpg" alt="La mia foto profilo">
+        <h1>Welcome to my personal page</h1>
+        <img src="profile_picture.jpg" alt="My profile picture">
     </header>
     
     <section>
-        <h2>Curriculum</h2>
-        <p>Aggiungi qui il tuo curriculum e le informazioni sulla tua formazione e esperienza professionale.</p>
+        <h2>Curriculum Vitae</h2>
+        <p>Add your curriculum vitae and information about your education and professional experience here.</p>
     </section>
 
     <section>
-        <h2>Lezioni Private</h2>
-        <h3>Matematica, Fisica e Chimica</h3>
-        <p>Offro lezioni private di matematica, fisica e chimica. Contattami per maggiori dettagli.</p>
+        <h2>Private Lessons</h2>
+        <h3>Math, Physics, and Chemistry</h3>
+        <p>I offer private lessons in math, physics, and chemistry. Contact me for more details.</p>
         
-        <h3>Chitarra, Teoria Musicale, Produzione Musicale</h3>
-        <p>Impara a suonare la chitarra, approfondisci la teoria musicale o scopri il mondo della produzione musicale con le mie lezioni private.</p>
+        <h3>Guitar, Music Theory, Music Production</h3>
+        <p>Learn to play the guitar, delve into music theory, or explore the world of music production with my private lessons.</p>
     </section>
 
     <section>
-        <h2>Produzione, Mixing e Mastering</h2>
-        <p>Offro servizi di produzione musicale, mixing e mastering per artisti e musicisti. Contattami per ulteriori informazioni.</p>
+        <h2>Production, Mixing, and Mastering</h2>
+        <p>I provide music production, mixing, and mastering services for artists and musicians. Contact me for more information.</p>
     </section>
 
     <section>
-        <h2>Fotografia</h2>
-        <p>Esplora il mio portfolio fotografico e scopri le mie passioni nel mondo della fotografia.</p>
+        <h2>Photography</h2>
+        <p>Explore my photography portfolio and discover my passion for the world of photography.</p>
     </section>
+
+    <footer>
+        <p>Contact me at: [your@email.com]</p>
+    </footer>
+</body>
+</html>
+
 
     <footer>
         <p>Contattami all'indirizzo email: [tuo@email.com]</p>
