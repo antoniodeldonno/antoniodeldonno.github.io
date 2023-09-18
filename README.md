@@ -13,12 +13,12 @@
     </header>
     
     <section>
-        <h2>Chi sono</h2>
-        <p>Ciao! Sono [Il tuo nome]. Sono appassionato/a di [interessi/hobby] e mi piace condividere le mie esperienze con il mondo.</p>
+        <h2>About me</h2>
+        <p>Website under building...</p>
     </section>
 
     <section>
-        <h2>Le mie foto</h2>
+        <h2>Some pictures</h2>
         <div class="gallery">
             <img src="foto1.jpg" alt="Descrizione della foto 1">
             <img src="foto2.jpg" alt="Descrizione della foto 2">
@@ -27,7 +27,7 @@
     </section>
 
     <footer>
-        <p>Contattami all'indirizzo email: [tuo@email.com]</p>
+        <p>Contattami all'indirizzo email: [a.deldonno94@gmail.com]</p>
     </footer>
 </body>
 </html>
