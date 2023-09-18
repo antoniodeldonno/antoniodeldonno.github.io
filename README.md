@@ -61,5 +61,4 @@
     <footer>
         <p>Contattami all'indirizzo email: [tuo@email.com]</p>
     </footer>
-</body>
-</html>
+
