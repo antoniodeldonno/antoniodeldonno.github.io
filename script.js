@@ -20,17 +20,24 @@ document.querySelectorAll('.section').forEach((section) => {
   observer.observe(section);
 });
 
-// Custom donut-shaped cursor
-const cursor = document.createElement('div');
-cursor.className = 'cursor';
-document.body.appendChild(cursor);
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent default anchor jump
+    const targetId = anchor.getAttribute('href'); // e.g., "#about"
+    const targetElement = document.querySelector(targetId);
 
-document.addEventListener('mousemove', (e) => {
-  cursor.style.left = `${e.clientX}px`;
-  cursor.style.top = `${e.clientY}px`;
-  if (Math.random() > 0.95) {
-    cursor.style.transform = `translate(-50%, -50%) scale(${1 + Math.random() * 0.2}) translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
-  }
+    if (targetElement) {
+      const headerOffset = 80; // Adjust based on header height (~80px)
+      const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+      const offsetPosition = elementPosition - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth' // Native smooth scrolling
+      });
+    }
+  });
 });
 
 // Fractal hallucination effect with sequence
@@ -270,11 +277,11 @@ document.querySelector('.next')?.addEventListener('click', () => {
 // Carica le foto da Imgur
 loadImgurPhotos();
 
-// Effetti casuali ottimizzati con glitch potenziati
-const elements = document.querySelectorAll('*');
+// Effetti casuali ottimizzati con glitch potenziati, escludendo nav e link
+const glitchElements = document.querySelectorAll('*:not(nav):not(nav *):not(a):not(a *)');
 setInterval(() => {
   if (!document.body.classList.contains('sobrio-mode')) {
-    elements.forEach(el => {
+    glitchElements.forEach(el => {
       if (Math.random() > 0.95) {
         el.style.transform = `rotate(${Math.random() * 0.5 - 0.25}deg) translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
         el.style.filter = `hue-rotate(${Math.random() * 180}deg) contrast(${1 + Math.random() * 0.5})`;
@@ -289,12 +296,26 @@ setInterval(() => {
 
 // Toggle Fancy Mode
 const toggleFancyModeButton = document.getElementById('toggleFancyMode');
-toggleFancyModeButton.addEventListener('click', () => {
-  document.body.classList.toggle('sobrio-mode');
-  toggleFancyModeButton.textContent = document.body.classList.contains('sobrio-mode') 
-    ? 'Toggle Fancy Mode' 
-    : 'Toggle Normal Mode';
-});
+if (toggleFancyModeButton) {
+  toggleFancyModeButton.addEventListener('click', () => {
+    console.log('Toggle button clicked, current sobrio-mode:', document.body.classList.contains('sobrio-mode'));
+    document.body.classList.toggle('sobrio-mode');
+    toggleFancyModeButton.textContent = document.body.classList.contains('sobrio-mode') 
+      ? 'Toggle Fancy Mode' 
+      : 'Toggle Normal Mode';
+  });
+}
+
+// Hamburger Menu Toggle
+const hamburger = document.querySelector('.hamburger');
+const navUl = document.querySelector('nav ul');
+
+if (hamburger && navUl) {
+  hamburger.addEventListener('click', () => {
+    navUl.classList.toggle('active');
+    hamburger.textContent = navUl.classList.contains('active') ? '✖' : '☰';
+  });
+}
 
 // Gestione Form Contatto con EmailJS
 const contactForm = document.getElementById('contactForm');
@@ -343,7 +364,8 @@ const navLinks = document.querySelectorAll('nav a');
 navLinks.forEach(link => {
   link.addEventListener('click', (e) => {
     if(window.innerWidth < 768) {
-      document.querySelector('nav ul').style.display = 'none';
+      document.querySelector('nav ul').classList.remove('active');
+      document.querySelector('.hamburger').textContent = '☰';
     }
   });
 });
