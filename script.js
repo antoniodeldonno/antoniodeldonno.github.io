@@ -13,12 +13,187 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { 
   threshold: 0.1,
-  rootMargin: "0px 0px -100px 0px"
+  rootMargin: "0px 0px -50px 0px" // Adjusted for smoother triggering
 });
 
 document.querySelectorAll('.section').forEach((section) => {
   observer.observe(section);
 });
+
+// Custom donut-shaped cursor
+const cursor = document.createElement('div');
+cursor.className = 'cursor';
+document.body.appendChild(cursor);
+
+document.addEventListener('mousemove', (e) => {
+  cursor.style.left = `${e.clientX}px`;
+  cursor.style.top = `${e.clientY}px`;
+  if (Math.random() > 0.95) {
+    cursor.style.transform = `translate(-50%, -50%) scale(${1 + Math.random() * 0.2}) translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+  }
+});
+
+// Fractal hallucination effect with sequence
+const fractalOverlay = document.createElement('canvas');
+fractalOverlay.className = 'fractal-overlay';
+document.body.appendChild(fractalOverlay);
+
+function resizeCanvas() {
+  fractalOverlay.width = window.innerWidth;
+  fractalOverlay.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const ctx = fractalOverlay.getContext('2d');
+
+// Fractal drawing functions
+function drawMandelbrot(t, zoomLevel = 0.005, cxOffset = 0, cyOffset = 0) {
+  ctx.clearRect(0, 0, fractalOverlay.width, fractalOverlay.height);
+  const maxIter = 50;
+  const offsetX = fractalOverlay.width / 2;
+  const offsetY = fractalOverlay.height / 2;
+
+  for (let x = 0; x < fractalOverlay.width; x += 2) {
+    for (let y = 0; y < fractalOverlay.height; y += 2) {
+      let zx = (x - offsetX) * zoomLevel + cxOffset;
+      let zy = (y - offsetY) * zoomLevel + cyOffset;
+      let cx = zx;
+      let cy = zy;
+      let iter = 0;
+      let zxx = zx;
+      let zyy = zy;
+
+      while (zxx * zxx + zyy * zyy < 4 && iter < maxIter) {
+        let temp = zxx * zxx - zyy * zyy + cx;
+        zyy = 2 * zxx * zyy + cy;
+        zxx = temp;
+        iter++;
+      }
+
+      if (iter < maxIter) {
+        const hue = (iter * 10 + t * 0.1) % 360;
+        ctx.fillStyle = `hsla(${hue}, 80%, 50%, 0.3)`;
+        ctx.fillRect(x, y, 2, 2);
+      }
+    }
+  }
+}
+
+function drawJulia(t) {
+  ctx.clearRect(0, 0, fractalOverlay.width, fractalOverlay.height);
+  const maxIter = 50;
+  const zoom = 0.005;
+  const offsetX = fractalOverlay.width / 2;
+  const offsetY = fractalOverlay.height / 2;
+  const cx = -0.8 + Math.sin(t * 0.001) * 0.2; // Dynamic Julia parameter
+  const cy = 0.156 + Math.cos(t * 0.001) * 0.2;
+
+  for (let x = 0; x < fractalOverlay.width; x += 2) {
+    for (let y = 0; y < fractalOverlay.height; y += 2) {
+      let zx = (x - offsetX) * zoom;
+      let zy = (y - offsetY) * zoom;
+      let iter = 0;
+
+      while (zx * zx + zy * zy < 4 && iter < maxIter) {
+        let temp = zx * zx - zy * zy + cx;
+        zy = 2 * zx * zy + cy;
+        zx = temp;
+        iter++;
+      }
+
+      if (iter < maxIter) {
+        const hue = (iter * 10 + t * 0.1) % 360;
+        ctx.fillStyle = `hsla(${hue}, 80%, 50%, 0.3)`;
+        ctx.fillRect(x, y, 2, 2);
+      }
+    }
+  }
+}
+
+function drawSierpinskiCarpet(t) {
+  ctx.clearRect(0, 0, fractalOverlay.width, fractalOverlay.height);
+  const size = Math.min(fractalOverlay.width, fractalOverlay.height) * 0.8;
+  const offsetX = (fractalOverlay.width - size) / 2;
+  const offsetY = (fractalOverlay.height - size) / 2;
+
+  function drawCarpet(x, y, size, level) {
+    if (level === 0) {
+      const hue = (t * 0.1) % 360;
+      ctx.fillStyle = `hsla(${hue}, 80%, 50%, 0.3)`;
+      ctx.fillRect(x, y, size, size);
+      return;
+    }
+
+    const newSize = size / 3;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (i === 1 && j === 1) continue; // Skip center
+        drawCarpet(x + i * newSize, y + j * newSize, newSize, level - 1);
+      }
+    }
+  }
+
+  drawCarpet(offsetX, offsetY, size, 4); // Level 4 for detail
+}
+
+function drawDeepMandelbrot(t) {
+  // Zoom into a specific region of Mandelbrot set
+  const zoomLevel = 0.00005 * (1 + Math.sin(t * 0.001) * 0.5); // Dynamic zoom
+  const cxOffset = -0.75; // Interesting region
+  const cyOffset = 0.1;
+  drawMandelbrot(t, zoomLevel, cxOffset, cyOffset);
+}
+
+// Fractal sequence
+let fractalTime = 0;
+let currentFractal = 0;
+const fractalSequence = [
+  { time: 7000, draw: drawMandelbrot, name: 'Mandelbrot' },
+  { time: 14000, draw: drawJulia, name: 'Julia' },
+  { time: 21000, draw: drawSierpinskiCarpet, name: 'Sierpinski Carpet' },
+  { time: 28000, draw: drawDeepMandelbrot, name: 'Deep Mandelbrot' }
+];
+
+function animateFractal() {
+  if (fractalOverlay.classList.contains('active') && !document.body.classList.contains('sobrio-mode')) {
+    const fractal = fractalSequence[currentFractal % fractalSequence.length];
+    fractal.draw(fractalTime);
+    fractalTime += 50;
+    requestAnimationFrame(animateFractal);
+  }
+}
+
+function triggerFractal(index) {
+  if (!document.body.classList.contains('sobrio-mode')) {
+    currentFractal = index % fractalSequence.length;
+    fractalOverlay.classList.add('active');
+    animateFractal();
+    setTimeout(() => {
+      fractalOverlay.classList.remove('active');
+    }, 3000); // Visible for 3 seconds
+  }
+}
+
+// Schedule fractal sequence
+setInterval(() => {
+  triggerFractal(0); // Mandelbrot at 7s
+}, 28000);
+setInterval(() => {
+  triggerFractal(1); // Julia at 14s
+}, 28000);
+setInterval(() => {
+  triggerFractal(2); // Sierpinski at 21s
+}, 28000);
+setInterval(() => {
+  triggerFractal(3); // Deep Mandelbrot at 28s
+}, 28000);
+
+// Trigger immediately to start the cycle
+setTimeout(() => triggerFractal(0), 7000);
+setTimeout(() => triggerFractal(1), 14000);
+setTimeout(() => triggerFractal(2), 21000);
+setTimeout(() => triggerFractal(3), 28000);
 
 // Toggle GIF/Foto nella sezione About Me
 const gifToggle = document.getElementById('gif-toggle');
@@ -76,7 +251,7 @@ function showSlides() {
   });
   
   slideIndex = (slideIndex + 1) % slides.length;
-  setTimeout(showSlides, 5000);
+  setTimeout(showSlides, 10000); // 10 seconds for slideshow refresh
 }
 
 // Pulsanti prev/next manuali
@@ -95,15 +270,21 @@ document.querySelector('.next')?.addEventListener('click', () => {
 // Carica le foto da Imgur
 loadImgurPhotos();
 
-// Effetti casuali ottimizzati
+// Effetti casuali ottimizzati con glitch potenziati
 const elements = document.querySelectorAll('*');
 setInterval(() => {
-  elements.forEach(el => {
-    if (Math.random() > 0.98) {
-      el.style.transform = `rotate(${Math.random() * 0.2 - 0.1}deg)`;
-      el.style.filter = `hue-rotate(${Math.random() * 90}deg)`;
-    }
-  });
+  if (!document.body.classList.contains('sobrio-mode')) {
+    elements.forEach(el => {
+      if (Math.random() > 0.95) {
+        el.style.transform = `rotate(${Math.random() * 0.5 - 0.25}deg) translate(${Math.random() * 4 - 2}px, ${Math.random() * 4 - 2}px)`;
+        el.style.filter = `hue-rotate(${Math.random() * 180}deg) contrast(${1 + Math.random() * 0.5})`;
+        setTimeout(() => {
+          el.style.transform = '';
+          el.style.filter = '';
+        }, 200);
+      }
+    });
+  }
 }, 200);
 
 // Toggle Fancy Mode
@@ -113,13 +294,6 @@ toggleFancyModeButton.addEventListener('click', () => {
   toggleFancyModeButton.textContent = document.body.classList.contains('sobrio-mode') 
     ? 'Toggle Fancy Mode' 
     : 'Toggle Normal Mode';
-  
-  // Aggiorna il tema dell'iframe di Lichess in base alla modalità
-  const chessPuzzleIframe = document.getElementById('chess-puzzle');
-  if (chessPuzzleIframe) {
-    const isSobrio = document.body.classList.contains('sobrio-mode');
-    chessPuzzleIframe.src = `https://lichess.org/training/frame?theme=${isSobrio ? 'dark' : 'cyber'}&bg=${isSobrio ? 'dark' : 'cyber'}`;
-  }
 });
 
 // Gestione Form Contatto con EmailJS
