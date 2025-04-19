@@ -13,46 +13,30 @@ body {
   line-height: 1.8;
   overflow-x: hidden;
   position: relative;
-  cursor: none; /* Hide default cursor in fancy mode */
+  cursor: auto; /* Default cursor in fancy mode */
 }
 
-/* Custom donut-shaped cursor */
-.cursor {
-  position: fixed;
-  width: 30px;
-  height: 30px;
-  background: radial-gradient(circle, transparent 30%, #00ffff 35%, #ff00cc 50%);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%, -50%);
-  box-shadow: 
-    0 0 10px #00ffff,
-    0 0 20px #ff00cc;
-  animation: glitchCursor 0.5s infinite alternate;
-}
-
-.cursor::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, transparent 20%, rgba(255, 0, 255, 0.3) 25%);
-  transform: scale(1.5);
-  border-radius: 50%;
-  animation: glitchPulse 1s infinite;
-}
-
-@keyframes glitchCursor {
-  0% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.1) translate(2px, -2px); }
-  100% { transform: translate(-50%, -50%) scale(1) translate(-2px, 2px); }
-}
-
-@keyframes glitchPulse {
-  0% { opacity: 0.3; transform: scale(1.5); }
-  100% { opacity: 0.1; transform: scale(2); }
-}
+/* Removed .cursor and .cursor::after styles
+   Previously:
+   .cursor {
+     position: fixed;
+     width: 30px;
+     height: 30px;
+     background: radial-gradient(circle, transparent 30%, #00ffff 35%, #ff00cc 50%);
+     border-radius: 50%;
+     pointer-events: none;
+     z-index: 9999;
+     transform: translate(-50%, -50%);
+     box-shadow: 
+       0 0 10px #00ffff,
+       0 0 20px #ff00cc;
+     animation: glitchCursor 1s infinite alternate;
+     will-change: transform, left, top;
+   }
+   .cursor::after { ... }
+   @keyframes glitchCursor { ... }
+   @keyframes glitchPulse { ... }
+*/
 
 /* Fractal hallucination overlay */
 .fractal-overlay {
@@ -62,7 +46,7 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 9998; /* Below cursor */
+  z-index: 9998; /* Below content */
   opacity: 0;
   transition: opacity 1s ease-in-out;
 }
@@ -86,7 +70,8 @@ body {
     rgba(255, 0, 255, 0.2) 30%
   );
   opacity: 0.4;
-  z-index: -1;
+  z-index: 1; /* Below content */
+  pointer-events: none; /* Prevent click blocking */
   animation: colorCycle 10s linear infinite, matrixGlitch 2s infinite;
 }
 
@@ -107,7 +92,8 @@ body {
     linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
   background-size: 20px 20px;
-  z-index: -1;
+  z-index: 1; /* Below content */
+  pointer-events: none; /* Prevent click blocking */
   animation: gridMove 5s linear infinite;
 }
 
@@ -138,6 +124,7 @@ body {
   transform: translateY(100px) scale(0.98);
   transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), 
               transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000; /* Above overlays but below header/nav */
 }
 
 .section.visible {
@@ -180,6 +167,18 @@ body {
 @keyframes borderPulse {
   0% { border-image-source: linear-gradient(45deg, #ff00cc, #3333ff); }
   100% { border-image-source: linear-gradient(135deg, #3333ff, #ff00cc); }
+}
+
+/* Ensure all links are clickable with default cursor */
+a {
+  position: relative;
+  z-index: 2; /* Above section content */
+  pointer-events: auto;
+  cursor: pointer; /* Default cursor for links in fancy mode */
+}
+
+body.sobrio-mode a {
+  cursor: pointer; /* Default cursor for links in sobrio mode */
 }
 
 /* Testi e titoli */
@@ -268,10 +267,11 @@ body {
   color: #00ffff;
   padding: 10px 20px;
   font-size: 1.2rem;
-  cursor: none; /* Ensure button uses custom cursor in fancy mode */
+  cursor: pointer; /* Default cursor in fancy mode */
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
+  z-index: 2; /* Ensure clickable */
 }
 
 .neon-button::before {
@@ -311,6 +311,7 @@ body {
   width: 100%;
   font-size: 1.1rem;
   transition: all 0.3s ease;
+  z-index: 2; /* Ensure interactive */
 }
 
 .neon-input:focus {
@@ -325,14 +326,15 @@ body {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1000;
+  z-index: 10000; /* Ensure above all overlays */
   background: rgba(0, 0, 0, 0.7);
   border: 2px solid #00ffff;
   color: #00ffff;
   padding: 10px 20px;
   font-size: 1rem;
-  cursor: none; /* Ensure button uses custom cursor in fancy mode */
+  cursor: pointer; /* Default cursor in fancy mode */
   transition: all 0.3s ease;
+  pointer-events: auto; /* Ensure clickable */
 }
 
 #toggleFancyMode:hover {
@@ -341,6 +343,17 @@ body {
     0 0 5px #00ffff,
     0 0 10px #00ffff,
     0 0 20px #00ffff;
+}
+
+body.sobrio-mode #toggleFancyMode {
+  cursor: pointer; /* Ensure clickable in sobrio mode */
+  background: #333;
+  border: 2px solid #555;
+}
+
+body.sobrio-mode #toggleFancyMode:hover {
+  background: #444;
+  box-shadow: none;
 }
 
 @media (max-width: 768px) {
@@ -356,7 +369,7 @@ body {
 body.sobrio-mode {
   animation: none;
   background: #1a1a1a;
-  cursor: auto; /* Restore default cursor in sobrio mode */
+  cursor: auto; /* Default cursor in sobrio mode */
 }
 
 /* Specifiche per sobrio-mode per mantenere visibilità del testo */
@@ -423,7 +436,7 @@ body.sobrio-mode .neon-button {
   background: #333;
   border: 2px solid #555;
   color: #fff;
-  cursor: auto; /* Restore default cursor for buttons */
+  cursor: pointer; /* Ensure clickable */
 }
 
 body.sobrio-mode .neon-button:hover {
@@ -441,13 +454,164 @@ body.sobrio-mode .neon-input:focus {
   box-shadow: none;
 }
 
-body.sobrio-mode .cursor,
-body.sobrio-mode .cursor::after {
-  display: none; /* Hide custom cursor in sobrio mode */
+/* Header and Navigation Styles */
+header {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px 0;
+  text-align: center;
+  border-bottom: 2px solid #8e44ad;
+  position: relative;
+  z-index: 10000; /* Ensure header is above all overlays */
 }
 
-body.sobrio-mode #toggleFancyMode {
-  cursor: auto; /* Restore default cursor for toggle button */
+header h1 {
+  font-size: 3rem;
+  color: #8e44ad;
+  animation: glitch 2s infinite;
+}
+
+/* Enhanced Navigation Menu with Smaller, Colored, Pulsating Rectangles */
+nav {
+  position: relative;
+  z-index: 10001; /* Ensure nav is above header and overlays */
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+nav ul li {
+  margin: 0 10px;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 1.2rem; /* Smaller text */
+  padding: 8px 12px; /* Smaller rectangles */
+  display: inline-block;
+  border-radius: 5px;
+  text-shadow: 
+    0 0 5px #ffffff,
+    0 0 10px #ffffff;
+  transition: all 0.3s ease;
+  animation: subtleGlitch 1.5s infinite, pulseGlow 2s infinite alternate;
+  position: relative;
+  z-index: 2; /* Ensure links are clickable */
+}
+
+/* Unique colors for each menu item */
+nav ul li:nth-child(1) a {
+  background: #00ffff; /* Cyan */
+  box-shadow: 0 0 10px #00ffff;
+}
+
+nav ul li:nth-child(2) a {
+  background: #ff00cc; /* Pink */
+  box-shadow: 0 0 10px #ff00cc;
+}
+
+nav ul li:nth-child(3) a {
+  background: #ffff00; /* Yellow */
+  box-shadow: 0 0 10px #ffff00;
+}
+
+nav ul li:nth-child(4) a {
+  background: #8e44ad; /* Purple */
+  box-shadow: 0 0 10px #8e44ad;
+}
+
+nav ul li:nth-child(5) a {
+  background: #27ae60; /* Green */
+  box-shadow: 0 0 10px #27ae60;
+}
+
+/* Fallback for additional items */
+nav ul li:nth-child(n+6) a {
+  background: #3333ff; /* Blue */
+  box-shadow: 0 0 10px #3333ff;
+}
+
+nav ul li a:hover {
+  transform: scale(1.05); /* Slight scale instead of 3D tilt */
+  box-shadow: 
+    0 0 15px currentColor,
+    0 0 25px currentColor,
+    0 0 35px currentColor;
+  text-shadow: 
+    0 0 10px #ffffff,
+    0 0 20px #ffffff;
+}
+
+@keyframes subtleGlitch {
+  0% { transform: translate(0, 0); }
+  5% { transform: translate(1px, -1px); }
+  10% { transform: translate(0, 0); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 10px currentColor; }
+  100% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+}
+
+/* Hamburger Menu for Mobile */
+.hamburger {
+  display: none;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  color: #00ffff;
+  cursor: pointer; /* Default cursor in fancy mode */
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10002; /* Above nav */
+  transition: all 0.3s ease;
+  pointer-events: auto; /* Ensure clickable */
+}
+
+body.sobrio-mode .hamburger {
+  cursor: pointer; /* Ensure clickable */
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  nav ul {
+    display: none;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.9);
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    padding: 20px 0;
+    z-index: 10001;
+  }
+
+  nav ul.active {
+    display: flex;
+  }
+
+  nav ul li {
+    margin: 10px 0;
+    text-align: center;
+  }
+
+  nav ul li a {
+    font-size: 1.1rem;
+    padding: 10px;
+    display: block;
+  }
 }
 
 /* Resto del CSS */
@@ -456,6 +620,8 @@ body.sobrio-mode #toggleFancyMode {
   max-width: 1200px;
   margin: 0 auto;
   padding: 30px 60px;
+  position: relative;
+  z-index: 1000; /* Above overlays */
 }
 
 .section-title {
@@ -476,45 +642,9 @@ body.sobrio-mode #toggleFancyMode {
   padding: 0 20px;
 }
 
-/* Aumento dimensioni testo */
-nav ul li a {
-  font-size: 1.4rem;
-}
-
 .section-list li {
   font-size: 1.2rem;
   margin: 20px 40px;
-}
-
-header {
-  background: rgba(0, 0, 0, 0.7);
-  padding: 20px 0;
-  text-align: center;
-  border-bottom: 2px solid #8e44ad;
-}
-
-header h1 {
-  font-size: 3rem;
-  color: #8e44ad;
-  animation: glitch 2s infinite;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-nav ul li {
-  margin: 0 15px;
-}
-
-nav ul li a {
-  text-decoration: none;
-  color: white;
-  font-size: 1.2rem;
-  animation: glitch 2s infinite;
 }
 
 .section {
@@ -578,6 +708,7 @@ nav ul li a {
   margin: 0 auto;
   padding: 20px;
   overflow: hidden;
+  z-index: 1000; /* Above overlays */
 }
 
 .slides {
@@ -613,10 +744,11 @@ nav ul li a {
   color: white;
   padding: 20px;
   border: none;
-  cursor: none; /* Ensure buttons use custom cursor in fancy mode */
+  cursor: pointer; /* Default cursor in fancy mode */
   font-size: 28px;
   transition: all 0.3s ease;
-  z-index: 10;
+  z-index: 1001; /* Above slideshow content */
+  pointer-events: auto; /* Ensure clickable */
 }
 
 .prev:hover, .next:hover {
@@ -632,14 +764,15 @@ nav ul li a {
   right: 20px;
 }
 
+body.sobrio-mode .prev,
+body.sobrio-mode .next {
+  cursor: pointer; /* Default cursor for slideshow buttons */
+}
+
 @media (max-width: 768px) {
   .container {
     width: 95%;
     padding: 10px;
-  }
-  
-  nav ul {
-    flex-direction: column;
   }
   
   .spotify-wrapper {
@@ -663,16 +796,6 @@ nav ul li a {
     padding: 15px;
     font-size: 20px;
   }
-
-  .cursor {
-    width: 20px;
-    height: 20px;
-  }
-}
-
-body.sobrio-mode .prev,
-body.sobrio-mode .next {
-  cursor: auto; /* Restore default cursor for slideshow buttons */
 }
 
 body::after {
@@ -690,7 +813,7 @@ body::after {
     transparent 2px
   );
   pointer-events: none;
-  z-index: 9997; /* Below fractal overlay and cursor */
+  z-index: 9997; /* Below header, nav, and content */
   animation: scan 5s linear infinite;
 }
 
@@ -816,6 +939,7 @@ nav ul li {
     0 0 10px #00ffff;
   border-radius: 8px;
   overflow: hidden;
+  z-index: 1000; /* Above overlays */
 }
 
 .youtube-wrapper iframe {
