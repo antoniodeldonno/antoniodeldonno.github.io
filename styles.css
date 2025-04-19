@@ -13,9 +13,65 @@ body {
   line-height: 1.8;
   overflow-x: hidden;
   position: relative;
+  cursor: none; /* Hide default cursor in fancy mode */
 }
 
-/* Effetti psichedelici */
+/* Custom donut-shaped cursor */
+.cursor {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  background: radial-gradient(circle, transparent 30%, #00ffff 35%, #ff00cc 50%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  box-shadow: 
+    0 0 10px #00ffff,
+    0 0 20px #ff00cc;
+  animation: glitchCursor 0.5s infinite alternate;
+}
+
+.cursor::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent 20%, rgba(255, 0, 255, 0.3) 25%);
+  transform: scale(1.5);
+  border-radius: 50%;
+  animation: glitchPulse 1s infinite;
+}
+
+@keyframes glitchCursor {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.1) translate(2px, -2px); }
+  100% { transform: translate(-50%, -50%) scale(1) translate(-2px, 2px); }
+}
+
+@keyframes glitchPulse {
+  0% { opacity: 0.3; transform: scale(1.5); }
+  100% { opacity: 0.1; transform: scale(2); }
+}
+
+/* Fractal hallucination overlay */
+.fractal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998; /* Below cursor */
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.fractal-overlay.active {
+  opacity: 0.7;
+}
+
+/* Effetti psichedelici potenziati */
 .cyber-overlay {
   position: fixed;
   top: 0;
@@ -24,14 +80,21 @@ body {
   height: 100%;
   background: repeating-linear-gradient(
     45deg,
-    rgba(255, 0, 0, 0.1),
-    rgba(0, 255, 0, 0.1) 10%,
-    rgba(0, 0, 255, 0.1) 20%,
-    rgba(255, 0, 255, 0.1) 30%
+    rgba(255, 0, 0, 0.2),
+    rgba(0, 255, 0, 0.2) 10%,
+    rgba(0, 0, 255, 0.2) 20%,
+    rgba(255, 0, 255, 0.2) 30%
   );
-  opacity: 0.3;
+  opacity: 0.4;
   z-index: -1;
-  animation: colorCycle 20s linear infinite;
+  animation: colorCycle 10s linear infinite, matrixGlitch 2s infinite;
+}
+
+@keyframes matrixGlitch {
+  0% { transform: translate(0, 0); }
+  10% { transform: translate(2px, -2px); }
+  20% { transform: translate(-2px, 2px); }
+  100% { transform: translate(0, 0); }
 }
 
 .neon-grid {
@@ -41,8 +104,8 @@ body {
   width: 100%;
   height: 100%;
   background-image: 
-    linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
   background-size: 20px 20px;
   z-index: -1;
   animation: gridMove 5s linear infinite;
@@ -65,12 +128,21 @@ body {
   100% { transform: translateY(-20px) translateX(-20px); }
 }
 
-/* Stili sezioni */
+/* Stili sezioni con animazioni più fluide */
 .section {
   position: relative;
   padding: 80px 0;
   margin: 30px 0;
   overflow: hidden;
+  opacity: 0;
+  transform: translateY(100px) scale(0.98);
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .section-bg {
@@ -196,10 +268,10 @@ body {
   color: #00ffff;
   padding: 10px 20px;
   font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  cursor: none; /* Ensure button uses custom cursor in fancy mode */
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .neon-button::before {
@@ -259,7 +331,7 @@ body {
   color: #00ffff;
   padding: 10px 20px;
   font-size: 1rem;
-  cursor: pointer;
+  cursor: none; /* Ensure button uses custom cursor in fancy mode */
   transition: all 0.3s ease;
 }
 
@@ -284,31 +356,61 @@ body {
 body.sobrio-mode {
   animation: none;
   background: #1a1a1a;
+  cursor: auto; /* Restore default cursor in sobrio mode */
 }
 
+/* Specifiche per sobrio-mode per mantenere visibilità del testo */
 body.sobrio-mode .cyber-overlay,
 body.sobrio-mode .neon-grid,
 body.sobrio-mode .section-bg,
 body.sobrio-mode .cyber-border,
-body.sobrio-mode .rainbow-text,
-body.sobrio-mode .neon-cyan,
-body.sobrio-mode .neon-pink,
-body.sobrio-mode .neon-yellow,
 body.sobrio-mode .hologram::before,
 body.sobrio-mode .neon-button::before,
 body.sobrio-mode .neon-button:hover::before,
 body.sobrio-mode .neon-input:focus,
-body.sobrio-mode .glitch-text,
-body.sobrio-mode .glitch-img,
-body.sobrio-mode .pulsate {
+body.sobrio-mode .fractal-overlay {
   animation: none !important;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   text-shadow: none !important;
   filter: none !important;
-  opacity: 1 !important;
+  opacity: 0 !important;
+}
+
+body.sobrio-mode .rainbow-text {
+  animation: none;
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: #ffffff;
+  text-shadow: none;
+}
+
+body.sobrio-mode .neon-cyan,
+body.sobrio-mode .neon-pink,
+body.sobrio-mode .neon-yellow,
+body.sobrio-mode .glitch-text,
+body.sobrio-mode .pulsate {
+  animation: none;
+  text-shadow: none;
+  color: #ffffff;
+}
+
+body.sobrio-mode h1,
+body.sobrio-mode h2,
+body.sobrio-mode h3,
+body.sobrio-mode p,
+body.sobrio-mode a,
+body.sobrio-mode li,
+body.sobrio-mode span,
+body.sobrio-mode strong {
   color: #ffffff !important;
+  text-shadow: none !important;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  opacity: 1 !important;
 }
 
 body.sobrio-mode .section {
@@ -321,6 +423,7 @@ body.sobrio-mode .neon-button {
   background: #333;
   border: 2px solid #555;
   color: #fff;
+  cursor: auto; /* Restore default cursor for buttons */
 }
 
 body.sobrio-mode .neon-button:hover {
@@ -338,18 +441,21 @@ body.sobrio-mode .neon-input:focus {
   box-shadow: none;
 }
 
+body.sobrio-mode .cursor,
+body.sobrio-mode .cursor::after {
+  display: none; /* Hide custom cursor in sobrio mode */
+}
+
+body.sobrio-mode #toggleFancyMode {
+  cursor: auto; /* Restore default cursor for toggle button */
+}
+
 /* Resto del CSS */
 .container {
   width: 80%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 30px 60px;
-}
-
-.section {
-  padding: 80px 0;
-  margin: 30px 0;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section-title {
@@ -378,13 +484,6 @@ nav ul li a {
 .section-list li {
   font-size: 1.2rem;
   margin: 20px 40px;
-}
-
-/* Animazioni più fluide */
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
 
 header {
@@ -419,25 +518,15 @@ nav ul li a {
 }
 
 .section {
-  padding: 60px 0;
   background: rgba(0, 0, 0, 0.7);
   margin: 20px 0;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  transform: translateY(50px);
-  transition: all 1s ease-out;
-}
-
-.section.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .section h2 {
   font-size: 2.5rem;
   color: #8e44ad;
-  margin-bottom: 20px;
   animation: glitch 2s infinite;
 }
 
@@ -493,7 +582,7 @@ nav ul li a {
 
 .slides {
   display: flex;
-  transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother slideshow transition */
   width: 100%;
 }
 
@@ -524,7 +613,7 @@ nav ul li a {
   color: white;
   padding: 20px;
   border: none;
-  cursor: pointer;
+  cursor: none; /* Ensure buttons use custom cursor in fancy mode */
   font-size: 28px;
   transition: all 0.3s ease;
   z-index: 10;
@@ -574,6 +663,16 @@ nav ul li a {
     padding: 15px;
     font-size: 20px;
   }
+
+  .cursor {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+body.sobrio-mode .prev,
+body.sobrio-mode .next {
+  cursor: auto; /* Restore default cursor for slideshow buttons */
 }
 
 body::after {
@@ -591,7 +690,7 @@ body::after {
     transparent 2px
   );
   pointer-events: none;
-  z-index: 9999;
+  z-index: 9997; /* Below fractal overlay and cursor */
   animation: scan 5s linear infinite;
 }
 
@@ -648,11 +747,13 @@ header h1 {
 
 .section-title {
   font-size: 2.5rem !important;
+  color: #27ae60 !important;
   margin-bottom: 20px !important;
 }
 
 .subsection-title {
   font-size: 1.8rem !important;
+  color: #e74c3c !important;
   margin: 15px 0 !important;
 }
 
