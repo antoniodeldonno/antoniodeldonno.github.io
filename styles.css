@@ -13,30 +13,8 @@ body {
   line-height: 1.8;
   overflow-x: hidden;
   position: relative;
-  cursor: auto; /* Default cursor in fancy mode */
+  cursor: auto;
 }
-
-/* Removed .cursor and .cursor::after styles
-   Previously:
-   .cursor {
-     position: fixed;
-     width: 30px;
-     height: 30px;
-     background: radial-gradient(circle, transparent 30%, #00ffff 35%, #ff00cc 50%);
-     border-radius: 50%;
-     pointer-events: none;
-     z-index: 9999;
-     transform: translate(-50%, -50%);
-     box-shadow: 
-       0 0 10px #00ffff,
-       0 0 20px #ff00cc;
-     animation: glitchCursor 1s infinite alternate;
-     will-change: transform, left, top;
-   }
-   .cursor::after { ... }
-   @keyframes glitchCursor { ... }
-   @keyframes glitchPulse { ... }
-*/
 
 /* Fractal hallucination overlay */
 .fractal-overlay {
@@ -46,7 +24,7 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 9998; /* Below content */
+  z-index: 9998;
   opacity: 0;
   transition: opacity 1s ease-in-out;
 }
@@ -70,8 +48,8 @@ body {
     rgba(255, 0, 255, 0.2) 30%
   );
   opacity: 0.4;
-  z-index: 1; /* Below content */
-  pointer-events: none; /* Prevent click blocking */
+  z-index: 1;
+  pointer-events: none;
   animation: colorCycle 10s linear infinite, matrixGlitch 2s infinite;
 }
 
@@ -92,8 +70,8 @@ body {
     linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
   background-size: 20px 20px;
-  z-index: 1; /* Below content */
-  pointer-events: none; /* Prevent click blocking */
+  z-index: 1;
+  pointer-events: none;
   animation: gridMove 5s linear infinite;
 }
 
@@ -124,12 +102,25 @@ body {
   transform: translateY(100px) scale(0.98);
   transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), 
               transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000; /* Above overlays but below header/nav */
+  z-index: 1000;
 }
 
 .section.visible {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+/* Simplified transitions for mobile */
+@media (max-width: 768px) {
+  .section {
+    transform: translateY(20px); /* Reduced translate distance */
+    transition: opacity 0.4s ease-in-out, 
+                transform 0.4s ease-in-out; /* Faster and simpler transition */
+  }
+  
+  .section.visible {
+    transform: translateY(0);
+  }
 }
 
 .section-bg {
@@ -172,13 +163,13 @@ body {
 /* Ensure all links are clickable with default cursor */
 a {
   position: relative;
-  z-index: 2; /* Above section content */
+  z-index: 2;
   pointer-events: auto;
-  cursor: pointer; /* Default cursor for links in fancy mode */
+  cursor: pointer;
 }
 
 body.sobrio-mode a {
-  cursor: pointer; /* Default cursor for links in sobrio mode */
+  cursor: pointer;
 }
 
 /* Testi e titoli */
@@ -267,11 +258,11 @@ body.sobrio-mode a {
   color: #00ffff;
   padding: 10px 20px;
   font-size: 1.2rem;
-  cursor: pointer; /* Default cursor in fancy mode */
+  cursor: pointer;
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
-  z-index: 2; /* Ensure clickable */
+  z-index: 2;
 }
 
 .neon-button::before {
@@ -311,7 +302,7 @@ body.sobrio-mode a {
   width: 100%;
   font-size: 1.1rem;
   transition: all 0.3s ease;
-  z-index: 2; /* Ensure interactive */
+  z-index: 2;
 }
 
 .neon-input:focus {
@@ -326,15 +317,15 @@ body.sobrio-mode a {
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 10000; /* Ensure above all overlays */
+  z-index: 10000;
   background: rgba(0, 0, 0, 0.7);
   border: 2px solid #00ffff;
   color: #00ffff;
   padding: 10px 20px;
   font-size: 1rem;
-  cursor: pointer; /* Default cursor in fancy mode */
+  cursor: pointer;
   transition: all 0.3s ease;
-  pointer-events: auto; /* Ensure clickable */
+  pointer-events: auto;
 }
 
 #toggleFancyMode:hover {
@@ -346,7 +337,7 @@ body.sobrio-mode a {
 }
 
 body.sobrio-mode #toggleFancyMode {
-  cursor: pointer; /* Ensure clickable in sobrio mode */
+  cursor: pointer;
   background: #333;
   border: 2px solid #555;
 }
@@ -358,10 +349,10 @@ body.sobrio-mode #toggleFancyMode:hover {
 
 @media (max-width: 768px) {
   #toggleFancyMode {
-    top: 60px;
+    top: 80px;
     right: 10px;
-    padding: 5px 10px;
-    font-size: 0.8rem;
+    padding: 8px 15px;
+    font-size: 0.9rem;
   }
 }
 
@@ -369,7 +360,7 @@ body.sobrio-mode #toggleFancyMode:hover {
 body.sobrio-mode {
   animation: none;
   background: #1a1a1a;
-  cursor: auto; /* Default cursor in sobrio mode */
+  cursor: auto;
 }
 
 /* Specifiche per sobrio-mode per mantenere visibilità del testo */
@@ -436,7 +427,7 @@ body.sobrio-mode .neon-button {
   background: #333;
   border: 2px solid #555;
   color: #fff;
-  cursor: pointer; /* Ensure clickable */
+  cursor: pointer;
 }
 
 body.sobrio-mode .neon-button:hover {
@@ -461,7 +452,7 @@ header {
   text-align: center;
   border-bottom: 2px solid #8e44ad;
   position: relative;
-  z-index: 10000; /* Ensure header is above all overlays */
+  z-index: 10000;
 }
 
 header h1 {
@@ -473,7 +464,7 @@ header h1 {
 /* Enhanced Navigation Menu with Smaller, Colored, Pulsating Rectangles */
 nav {
   position: relative;
-  z-index: 10001; /* Ensure nav is above header and overlays */
+  z-index: 10001;
 }
 
 nav ul {
@@ -493,8 +484,8 @@ nav ul li {
 nav ul li a {
   text-decoration: none;
   color: #ffffff;
-  font-size: 1.2rem; /* Smaller text */
-  padding: 8px 12px; /* Smaller rectangles */
+  font-size: 1.2rem;
+  padding: 8px 12px;
   display: inline-block;
   border-radius: 5px;
   text-shadow: 
@@ -503,43 +494,43 @@ nav ul li a {
   transition: all 0.3s ease;
   animation: subtleGlitch 1.5s infinite, pulseGlow 2s infinite alternate;
   position: relative;
-  z-index: 2; /* Ensure links are clickable */
+  z-index: 2;
 }
 
 /* Unique colors for each menu item */
 nav ul li:nth-child(1) a {
-  background: #00ffff; /* Cyan */
+  background: #00ffff;
   box-shadow: 0 0 10px #00ffff;
 }
 
 nav ul li:nth-child(2) a {
-  background: #ff00cc; /* Pink */
+  background: #ff00cc;
   box-shadow: 0 0 10px #ff00cc;
 }
 
 nav ul li:nth-child(3) a {
-  background: #ffff00; /* Yellow */
+  background: #ffff00;
   box-shadow: 0 0 10px #ffff00;
 }
 
 nav ul li:nth-child(4) a {
-  background: #8e44ad; /* Purple */
+  background: #8e44ad;
   box-shadow: 0 0 10px #8e44ad;
 }
 
 nav ul li:nth-child(5) a {
-  background: #27ae60; /* Green */
+  background: #27ae60;
   box-shadow: 0 0 10px #27ae60;
 }
 
 /* Fallback for additional items */
 nav ul li:nth-child(n+6) a {
-  background: #3333ff; /* Blue */
+  background: #3333ff;
   box-shadow: 0 0 10px #3333ff;
 }
 
 nav ul li a:hover {
-  transform: scale(1.05); /* Slight scale instead of 3D tilt */
+  transform: scale(1.05);
   box-shadow: 
     0 0 15px currentColor,
     0 0 25px currentColor,
@@ -568,17 +559,17 @@ nav ul li a:hover {
   background: none;
   border: none;
   color: #00ffff;
-  cursor: pointer; /* Default cursor in fancy mode */
+  cursor: pointer;
   position: fixed;
   top: 20px;
   left: 20px;
-  z-index: 10002; /* Above nav */
+  z-index: 10002;
   transition: all 0.3s ease;
-  pointer-events: auto; /* Ensure clickable */
+  pointer-events: auto;
 }
 
 body.sobrio-mode .hamburger {
-  cursor: pointer; /* Ensure clickable */
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -596,6 +587,7 @@ body.sobrio-mode .hamburger {
     width: 100%;
     padding: 20px 0;
     z-index: 10001;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   }
 
   nav ul.active {
@@ -603,14 +595,16 @@ body.sobrio-mode .hamburger {
   }
 
   nav ul li {
-    margin: 10px 0;
+    margin: 15px 0;
     text-align: center;
   }
 
   nav ul li a {
-    font-size: 1.1rem;
-    padding: 10px;
+    font-size: 1.3rem;
+    padding: 12px;
     display: block;
+    width: 80%;
+    margin: 0 auto;
   }
 }
 
@@ -621,7 +615,7 @@ body.sobrio-mode .hamburger {
   margin: 0 auto;
   padding: 30px 60px;
   position: relative;
-  z-index: 1000; /* Above overlays */
+  z-index: 1000;
 }
 
 .section-title {
@@ -689,7 +683,7 @@ body.sobrio-mode .hamburger {
 
 .spotify-wrapper {
   position: relative;
-  padding-top: 117%; /* Aspect ratio per mantenere proporzioni Spotify */
+  padding-top: 117%;
 }
 
 .spotify-wrapper iframe {
@@ -708,12 +702,12 @@ body.sobrio-mode .hamburger {
   margin: 0 auto;
   padding: 20px;
   overflow: hidden;
-  z-index: 1000; /* Above overlays */
+  z-index: 1000;
 }
 
 .slides {
   display: flex;
-  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother slideshow transition */
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
 }
 
@@ -744,11 +738,11 @@ body.sobrio-mode .hamburger {
   color: white;
   padding: 20px;
   border: none;
-  cursor: pointer; /* Default cursor in fancy mode */
+  cursor: pointer;
   font-size: 28px;
   transition: all 0.3s ease;
-  z-index: 1001; /* Above slideshow content */
-  pointer-events: auto; /* Ensure clickable */
+  z-index: 1001;
+  pointer-events: auto;
 }
 
 .prev:hover, .next:hover {
@@ -766,7 +760,7 @@ body.sobrio-mode .hamburger {
 
 body.sobrio-mode .prev,
 body.sobrio-mode .next {
-  cursor: pointer; /* Default cursor for slideshow buttons */
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -776,7 +770,7 @@ body.sobrio-mode .next {
   }
   
   .spotify-wrapper {
-    padding-top: 100%;
+    padding-top: 80%;
   }
   
   .section-gif {
@@ -789,12 +783,73 @@ body.sobrio-mode .next {
   }
 
   .slide img {
-    height: 400px;
+    height: 300px;
   }
 
   .prev, .next {
-    padding: 15px;
+    padding: 10px;
     font-size: 20px;
+  }
+
+  /* Ensure about-content stacks properly */
+  .about-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .about-image img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .section-body {
+    margin: 0 10px 15px 10px;
+    padding: 0 10px;
+    font-size: 1rem;
+  }
+
+  .section-list li {
+    margin: 15px 10px;
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 2rem !important;
+  }
+
+  .subsection-title {
+    font-size: 1.4rem !important;
+  }
+
+  /* Ensure iframes are fully responsive */
+  .youtube-wrapper {
+    padding-top: 56.25%;
+  }
+
+  .youtube-wrapper iframe,
+  .spotify-wrapper iframe {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Prevent overflow and ensure visibility */
+  .section {
+    padding: 40px 0;
+    margin: 10px 0;
+    overflow: visible;
+  }
+
+  /* Adjust navigation for mobile */
+  nav ul {
+    top: 70px;
+  }
+
+  /* Ensure overlays don't interfere */
+  .cyber-overlay,
+  .neon-grid,
+  .vhs-overlay {
+    display: none;
   }
 }
 
@@ -813,7 +868,7 @@ body::after {
     transparent 2px
   );
   pointer-events: none;
-  z-index: 9997; /* Below header, nav, and content */
+  z-index: 9997;
   animation: scan 5s linear infinite;
 }
 
@@ -931,7 +986,7 @@ nav ul li {
 
 .youtube-wrapper {
   position: relative;
-  padding-top: 56.25%; /* Aspect ratio 16:9 */
+  padding-top: 56.25%;
   margin: 20px 0;
   border: 2px solid #00ffff;
   box-shadow: 
@@ -939,7 +994,7 @@ nav ul li {
     0 0 10px #00ffff;
   border-radius: 8px;
   overflow: hidden;
-  z-index: 1000; /* Above overlays */
+  z-index: 1000;
 }
 
 .youtube-wrapper iframe {
