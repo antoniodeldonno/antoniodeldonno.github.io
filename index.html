@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio of Antonio Del Donno, a PhD candidate in noncommutative geometry, musician, and photographer. Explore mathematics, music, and photography.">
   <title>Antonio Del Donno - Mathematics, Music, Photography</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -10,13 +11,15 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
+  <div class="vhs-overlay"></div>
   <div class="cyber-overlay"></div>
   <div class="neon-grid"></div>
-  <button id="toggleFancyMode">Toggle Fancy Mode</button>
-  <header>
+  <button id="toggleFancyMode" aria-label="Toggle between fancy and normal mode">Toggle Fancy Mode</button>
+  <header role="banner">
     <div class="container">
       <h1 class="glitch-text" data-text="Antonio Del Donno">Antonio Del Donno</h1>
-      <nav>
+      <nav role="navigation">
+        <button class="hamburger" aria-label="Toggle navigation menu">☰</button>
         <ul>
           <li><a href="#about" class="glitch-text pulsate">About Me</a></li>
           <li><a href="#mathematics" class="glitch-text pulsate">Mathematics</a></li>
@@ -28,151 +31,153 @@
     </div>
   </header>
 
-  <section id="about" class="section glitch-bg">
-    <div class="section-bg" style="background-image: url(https://i.giphy.com/media/TFgXff1FIzjZBD2dNs/giphy.gif)"></div>
-    <div class="cyber-border"></div>
-    <div class="container">
-      <div class="about-content">
-        <div class="about-text">
-          <h2 class="section-title rainbow-text">About Me</h2>
-          <p class="section-body">
-            Hi, I’m Antonio Del Donno! I began my academic journey in theoretical physics, specializing in quantum field theory and beyond the Standard Model physics. Over time, I became increasingly fascinated by the mathematical foundations of these theories and, more broadly, by mathematical methods in physics. This interest led me to explore geometry and topology in greater depth. Driven by this passion, I pursued a master’s degree in pure mathematics, where I realized that my true path may lay in mathematical research. My second master’s thesis focused on noncommutative geometry, specifically on differential calculi for quantum principal bundles. Currently, I am a PhD candidate at Charles University in Prague, working on the noncommutative geometry of quantum flag manifolds. Alongside my research, I tutor engineering and chemistry students at the University of Bologna and teach mathematics, physics, and chemistry privately. Beyond academia, music has always been a fundamental part of my life; whether composing, improvising, or simply playing for enjoyment, I find music to be an essential creative outlet to balances the scientific part of my mind. I also enjoy photography, which provides me an excellent excuse to go outside for a walk when I need to. <a href="https://www.dropbox.com/scl/fi/9t9kw7iuw0k5mgsx8t6m1/cv.pdf?rlkey=494o1bu5ou3eu34230nx7vomu&dl=0" target="_blank" class="neon-link">Download my CV</a>.
-          </p>
-        </div>
-        <div class="about-image">
-          <div id="gif-toggle" class="glitch-img hologram">
-            <img src="https://media.giphy.com/media/TFgXff1FIzjZBD2dNs/giphy.gif?cid=790b7611jp20j2ly6ccpzqluoc451ldbpb8ts4nn7nljob6v&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Antonio Del Donno" id="gif-image">
-            <img src="https://i.ibb.co/jPQypbFY/crop.png" alt="Antonio Del Donno" id="photo-image" style="display: none;">
+  <main role="main">
+    <section id="about" class="section glitch-bg">
+      <div class="section-bg" style="background-image: url(https://i.giphy.com/media/TFgXff1FIzjZBD2dNs/giphy.gif)"></div>
+      <div class="cyber-border"></div>
+      <div class="container">
+        <div class="about-content">
+          <div class="about-text">
+            <h2 class="section-title rainbow-text">About Me</h2>
+            <p class="section-body">
+              Hi, I’m Antonio Del Donno! I began my academic journey in theoretical physics, specializing in quantum field theory and beyond the Standard Model physics. Over time, I became increasingly fascinated by the mathematical foundations of these theories and, more broadly, by mathematical methods in physics. This interest led me to explore geometry and topology in greater depth. Driven by this passion, I pursued a master’s degree in pure mathematics, where I realized that my true path may lie in mathematical research. My second master’s thesis focused on noncommutative geometry, specifically on differential calculi for quantum principal bundles. Currently, I am a PhD candidate at Charles University in Prague, working on the noncommutative geometry of quantum flag manifolds. Alongside my research, I tutor engineering and chemistry students at the University of Bologna and teach mathematics, physics, and chemistry privately. Beyond academia, music has always been a fundamental part of my life; whether composing, improvising, or simply playing for enjoyment, I find music to be an essential creative outlet to balance the scientific part of my mind. I also enjoy photography, which provides me an excellent excuse to go outside for a walk when I need to. <a href="https://www.dropbox.com/scl/fi/9t9kw7iuw0k5mgsx8t6m1/cv.pdf?rlkey=494o1bu5ou3eu34230nx7vomu&dl=0" target="_blank" class="neon-link">Download my CV</a>.
+            </p>
+          </div>
+          <div class="about-image">
+            <div id="gif-toggle" class="glitch-img hologram">
+              <img src="https://media.giphy.com/media/TFgXff1FIzjZBD2dNs/giphy.gif?cid=790b7611jp20j2ly6ccpzqluoc451ldbpb8ts4nn7nljob6v&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Antonio Del Donno" id="gif-image" loading="lazy">
+              <img src="https://i.ibb.co/jPQypbFY/crop.png" alt="Antonio Del Donno" id="photo-image" style="display: none;" loading="lazy">
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="mathematics" class="section glitch-bg">
-    <div class="section-bg" style="background-image: url(https://i.giphy.com/media/l1KVbbRt3cYF2E80w/giphy.gif)"></div>
-    <div class="cyber-border"></div>
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title rainbow-text">Mathematics</h2>
+    <section id="mathematics" class="section glitch-bg">
+      <div class="section-bg" style="background-image: url(https://i.giphy.com/media/l1KVbbRt3cYF2E80w/giphy.gif)"></div>
+      <div class="cyber-border"></div>
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title rainbow-text">Mathematics</h2>
+        </div>
+        <p class="section-body">I am a PhD student at Charles University in Prague, specializing in the noncommutative Geometry of quantum flag manifolds.</p>
+        <h3 class="subsection-title neon-cyan">Research</h3>
+        <ul class="section-list">
+          <li><strong class="neon-pink">Research Topics:</strong> Noncommutative Geometry, Hopf Algebras.</li>
+          <li><strong class="neon-pink">Research Group:</strong> <a href="https://ncgandtprague.wordpress.com/" target="_blank" class="neon-link">NCG&T Prague Research Group</a></li>
+          <li><strong class="neon-pink">Publications:</strong> <a href="https://arxiv.org/search/?query=Antonio+Del+Donno&searchtype=author" target="_blank" class="neon-link">View my papers on arXiv</a></li>
+        </ul>
+        <h3 class="subsection-title neon-cyan">Collaborations</h3>
+        <ul class="section-list">
+          <li>Main research project with <strong class="neon-yellow">Reamonn O' Buachalla</strong> and <strong class="neon-yellow">Thomas Weber</strong> on quantum flag manifolds and quantum groups, at the Charles University of Prague.</li>
+          <li>Collaboration with <strong class="neon-yellow">Giovanni Gava</strong>, <strong class="neon-yellow">Emanuele Latini</strong>, <strong class="neon-yellow">Thomas Weber</strong> on quantum Cartan geometry at the University of Bologna.</li>
+        </ul>
+        <h3 class="subsection-title neon-cyan">Teaching</h3>
+        <ul class="section-list">
+          <li>I am a teaching tutor at the University of Bologna. <a href="https://www.unibo.it/sitoweb/antonio.deldonno2" target="_blank" class="neon-link">Find more details here</a>.</li>
+        </ul>
+        <h3 class="subsection-title neon-cyan">Seminars</h3>
+        <ul class="section-list">
+          <li>
+            <strong class="neon-pink">Noncommutative Geometry Seminar:</strong> 
+            <a href="https://www.youtube.com/watch?v=13g-HlUMbyY&ab_channel=PragueNCGT" target="_blank" class="neon-link">Quantum Principal Bundles and Differential Calculi</a>
+            <div class="youtube-wrapper">
+              <iframe 
+                width="100%" 
+                height="315" 
+                src="https://www.youtube.com/embed/13g-HlUMbyY" 
+                title="Noncommutative Geometry Seminar by Antonio Del Donno" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+          </li>
+        </ul>
+        <h3 class="subsection-title neon-cyan">Find me at:</h3>
+        <ul class="section-list">
+          <li><strong class="neon-pink">A Quantum of Non-commutativity.</strong> - <span class="neon-yellow">July 7-11, 2025</span>, Ambleside <a href="https://sites.google.com/view/a-quantum-of-noncommutativity/home?authuser=0" target="_blank" class="neon-link">Event Details</a></li>
+        </ul>
       </div>
-      <p class="section-body">I am a PhD student at Charles University in Prague, specializing in the noncommutative Geometry of quantum flag manifolds.</p>
-      <h3 class="subsection-title neon-cyan">Research</h3>
-      <ul class="section-list">
-        <li><strong class="neon-pink">Research Topics:</strong> Noncommutative Geometry, Hopf Algebras.</li>
-        <li><strong class="neon-pink">Research Group:</strong> <a href="https://ncgandtprague.wordpress.com/" target="_blank" class="neon-link">NCG&T Prague Research Group</a></li>
-        <li><strong class="neon-pink">Publications:</strong> <a href="https://arxiv.org/search/?query=Antonio+Del+Donno&searchtype=author" target="_blank" class="neon-link">View my papers on arXiv</a></li>
-      </ul>
-      <h3 class="subsection-title neon-cyan">Collaborations</h3>
-      <ul class="section-list">
-        <li>Main research project with <strong class="neon-yellow">Reamonn O' Buachalla</strong> and <strong class="neon-yellow">Thomas Weber</strong> on quantum flag manifolds and quantum groups, at the Charles University of Prague.</li>
-        <li>Collaboration with  <strong class="neon-yellow">Giovanni Gava</strong>, <strong class="neon-yellow">Emanuele Latini</strong>, <strong class="neon-yellow">Thomas Weber</strong> on quantum Cartan geometry at the University of Bologna.</li>
-      </ul>
-      <h3 class="subsection-title neon-cyan">Teaching</h3>
-      <ul class="section-list">
-        <li>I am a teaching tutor at the University of Bologna. <a href="https://www.unibo.it/sitoweb/antonio.deldonno2" target="_blank" class="neon-link">Find more details here</a>.</li>
-      </ul>
-      <h3 class="subsection-title neon-cyan">Seminars</h3>
-      <ul class="section-list">
-        <li>
-          <strong class="neon-pink">Noncommutative Geometry Seminar:</strong> 
-          <a href="https://www.youtube.com/watch?v=13g-HlUMbyY&ab_channel=PragueNCGT" target="_blank" class="neon-link">Quantum Principal Bundles and Differential Calculi</a>
-          <div class="youtube-wrapper">
-            <iframe 
-              width="100%" 
-              height="315" 
-              src="https://www.youtube.com/embed/13g-HlUMbyY" 
-              title="YouTube video player" 
-              frameborder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
+    </section>
+
+    <section id="music" class="section glitch-bg active">
+      <div class="section-bg" style="background-image: url(https://i.giphy.com/media/qOAMZz0xULAqP9Sz5u/giphy.gif)"></div>
+      <div class="cyber-border"></div>
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title rainbow-text">Music</h2>
+        </div>
+        <p class="section-body">I'm a guitar player, a composer, a producer, and a mixing/mastering engineer.</p>
+        <h3 class="subsection-title neon-cyan">My Projects</h3>
+        <ul class="section-list">
+          <li><strong class="neon-pink">I Botanici:</strong> We are a math/post-rock band with very broad influences ranging from pop music to jazz. We have three active records up-to-date. Our latest work is the self-titled record "I Botanici", released on December 2023. We count approximately 200 live shows across all Italy.</li>
+          <li><strong class="neon-pink">Tiny Donuts:</strong> Instrumental electronic jazz music based on guitar improvisation, rhythmic/harmonic exploration, unpredictable changes. This is my solo project where I give freedom to all the ideas rushing in my mind. I have published 5 singles and right now I'm working on an EP.</li>
+        </ul>
+        <h3 class="subsection-title neon-cyan">Production Work</h3>
+        <ul class="section-list">
+          <li>Freelancer music producer and mixing/mastering engineer. During the past, I have worked as a producer, mixing, and mastering engineer for Garrincha edizioni musicali, a leading record label for independent music in Italy. My portfolio encompasses collaborations with several artists from the Italian music scene.</li>
+        </ul>
+        <h3 class="section-title rainbow-text">Listen to My Music</h3>
+        <div class="spotify-players">
+          <div class="spotify-wrapper">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/1Wxqtj8Xr0rWvwDFOPJ5Hr?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
           </div>
-        </li>
-      </ul>
-      <h3 class="subsection-title neon-cyan">Find me at:</h3>
-      <ul class="section-list">
-        <li><strong class="neon-pink">A quantum of non-commutativity.</strong> - <span class="neon-yellow">July 7-11, 2025</span>, Ambleside <a href=" https://sites.google.com/view/a-quantum-of-noncommutativity/home?authuser=0 " target="_blank" class="neon-link">Event Details</a></li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="music" class="section glitch-bg active">
-    <div class="section-bg" style="background-image: url(https://i.giphy.com/media/qOAMZz0xULAqP9Sz5u/giphy.gif)"></div>
-    <div class="cyber-border"></div>
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title rainbow-text">Music</h2>
-      </div>
-      <p class="section-body">I'm a guitar player, a composer, a producer and a mixing/mastering engineer.</p>
-      <h3 class="subsection-title neon-cyan">My Projects</h3>
-      <ul class="section-list">
-        <li><strong class="neon-pink">I Botanici:</strong> We are a math/post-rock band with very broad influences ranging from pop music to jazz. We have three active records up-to-date. Our latest work is the self-titled record "I Botanici", released on December 2023. We count approximately 200 live shows across all Italy.</li>
-        <li><strong class="neon-pink">Tiny Donuts:</strong> Instrumental electronic jazz music based on guitar improvisation, rhythmic/harmonic exploration, unpredictable changes. This is my solo project where I give freedom to all the ideas rushing in my mind. I have published 5 singles and right now I'm working on an EP.</li>
-      </ul>
-      <h3 class="subsection-title neon-cyan">Production Work</h3>
-      <ul class="section-list">
-        <li>Freelancer music producer and mixing/mastering engineer. During the past I have worked as a producer, mixing and mastering engineer for Garrincha edizioni musicali, leading record label for independent music in Italy. My portfolio encompasses collaborations with several artists from the Italian music scene.</li>
-      </ul>
-      <h3 class="section-title rainbow-text">Listen to My Music</h3>
-      <div class="spotify-players">
-        <div class="spotify-wrapper">
-          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/1Wxqtj8Xr0rWvwDFOPJ5Hr?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-        <div class="spotify-wrapper">
-          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5iVbAfxqMpJ4Y15b4TH1aX?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-        <div class="spotify-wrapper">
-          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3Opq68f81QSB35nBhIOZ9B?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-        <div class="spotify-wrapper">
-          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5N7qrQ8o984okVoyvERYHI?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-        <div class="spotify-wrapper">
-          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/3Px7SSj6u1kiwXEXMiKeFw?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-        <div class="spotify-wrapper">
-          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/6qOom60FnqkeRVSDJO1z44?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          <div class="spotify-wrapper">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5iVbAfxqMpJ4Y15b4TH1aX?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+          <div class="spotify-wrapper">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3Opq68f81QSB35nBhIOZ9B?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+          <div class="spotify-wrapper">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/5N7qrQ8o984okVoyvERYHI?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+          <div class="spotify-wrapper">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/3Px7SSj6u1kiwXEXMiKeFw?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
+          <div class="spotify-wrapper">
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/6qOom60FnqkeRVSDJO1z44?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="photography" class="section glitch-bg">
-    <div class="section-bg" style="background-image: url(https://i.giphy.com/media/5BqAIgqUsCJNFITtJS/giphy.gif)"></div>
-    <div class="cyber-border"></div>
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title rainbow-text">Photography</h2>
+    <section id="photography" class="section glitch-bg">
+      <div class="section-bg" style="background-image: url(https://i.giphy.com/media/5BqAIgqUsCJNFITtJS/giphy.gif)"></div>
+      <div class="cyber-border"></div>
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title rainbow-text">Photography</h2>
+        </div>
+        <p class="section-body">Here are some of my favorite photos from my <a href="https://500px.com/p/antonio_del_donno?view=photos" target="_blank" class="neon-link">500px profile</a>.</p>
+        <div class="slideshow-container">
+          <div class="slides" id="imgur-slides"></div>
+          <button class="prev neon-button" aria-label="Previous slide">❮</button>
+          <button class="next neon-button" aria-label="Next slide">❯</button>
+        </div>
       </div>
-      <p class="section-body">Here are some of my favorite photos from my <a href="https://500px.com/p/antonio_del_donno?view=photos" target="_blank" class="neon-link">500px profile</a>.</p>
-      <div class="slideshow-container">
-        <div class="slides" id="imgur-slides"></div>
-        <button class="prev neon-button">❮</button>
-        <button class="next neon-button">❯</button>
+    </section>
+
+    <section id="contact" class="section glitch-bg">
+      <div class="cyber-border"></div>
+      <div class="container">
+        <h2 class="rainbow-text">Contact</h2>
+        <p class="neon-pink">Feel free to reach out!</p>
+        <form id="contactForm" class="cyber-form">
+          <label for="name" class="neon-cyan">Name:</label>
+          <input type="text" id="name" name="name" required class="neon-input" aria-required="true">
+          <label for="email" class="neon-cyan">Email:</label>
+          <input type="email" id="email" name="email" required class="neon-input" aria-required="true">
+          <label for="message" class="neon-cyan">Message:</label>
+          <textarea id="message" name="message" rows="5" required class="neon-input" aria-required="true"></textarea>
+          <button type="submit" class="neon-button">Send</button>
+        </form>
       </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <section id="contact" class="section glitch-bg">
-    <div class="cyber-border"></div>
-    <div class="container">
-      <h2 class="rainbow-text">Contact</h2>
-      <p class="neon-pink">Feel free to reach out!</p>
-      <form id="contactForm" class="cyber-form">
-        <label for="name" class="neon-cyan">Name:</label>
-        <input type="text" id="name" name="name" required class="neon-input">
-        <label for="email" class="neon-cyan">Email:</label>
-        <input type="email" id="email" name="email" required class="neon-input">
-        <label for="message" class="neon-cyan">Message:</label>
-        <textarea id="message" name="message" rows="5" required class="neon-input"></textarea>
-        <button type="submit" class="neon-button">Send</button>
-      </form>
-    </div>
-  </section>
-
-  <footer class="glitch-bg">
+  <footer class="glitch-bg" role="contentinfo">
     <div class="cyber-border"></div>
     <div class="container">
       <p class="neon-yellow">© 1994 Antonio Del Donno.</p>
@@ -184,3 +189,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
