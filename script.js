@@ -16,23 +16,28 @@ function debounce(func, wait) {
   };
 }
 
+// Detect touch devices
+const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 // Scroll Animations with Staggered Effects
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
-      addParallaxEffect(entry.target);
+      if (!isTouchDevice()) addParallaxEffect(entry.target); // Disable parallax on touch
       addPulseEffect(entry.target);
     } else {
       entry.target.classList.remove('visible');
     }
   });
 }, { 
-  threshold: 0.3,
-  rootMargin: "0px 0px -50px 0px"
+  threshold: 0.1,
+  rootMargin: "0px 0px -30px 0px"
 });
 
+// Observe sections with preloading
 document.querySelectorAll('.section').forEach(section => {
+  section.style.willChange = 'opacity, transform';
   observer.observe(section);
 });
 
@@ -56,7 +61,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Spark Effect on Links
 const sparkColors = ['var(--neon-cyan)', 'var(--neon-pink)', 'var(--neon-yellow)'];
 function addSparkEffect(link) {
-  link.addEventListener('mouseover', (e) => {
+  const createSpark = (e) => {
     if (document.body.classList.contains('sobrio-mode')) return;
     const spark = document.createElement('span');
     spark.className = 'spark';
@@ -66,42 +71,66 @@ function addSparkEffect(link) {
     spark.style.background = sparkColors[Math.floor(Math.random() * sparkColors.length)];
     spark.style.borderRadius = '50%';
     spark.style.pointerEvents = 'none';
-    spark.style.left = `${e.offsetX}px`;
-    spark.style.top = `${e.offsetY}px`;
+    const offsetX = e.offsetX || (e.touches && e.touches[0].clientX - link.getBoundingClientRect().left) || 0;
+    const offsetY = e.offsetY || (e.touches && e.touches[0].clientY - link.getBoundingClientRect().top) || 0;
+    spark.style.left = `${offsetX}px`;
+    spark.style.top = `${offsetY}px`;
     spark.style.boxShadow = `0 0 6px ${spark.style.background}`;
     spark.style.animation = 'sparkle 0.5s ease-out';
     link.appendChild(spark);
     setTimeout(() => spark.remove(), 500);
-  });
+  };
+
+  link.addEventListener('mouseover', createSpark);
+  link.addEventListener('touchstart', createSpark, { passive: true });
 }
 
 document.querySelectorAll('.neon-link, nav a').forEach(addSparkEffect);
 
-// Spark Animation Styles
-const sparkStyle = document.createElement('style');
-sparkStyle.innerHTML = `
+// Animation Styles with Reduced Motion Support
+const animationStyle = document.createElement('style');
+animationStyle.innerHTML = `
   @keyframes sparkle {
     0% { transform: scale(1); opacity: 1; }
     100% { transform: scale(3); opacity: 0; }
   }
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.03); opacity: 0.95; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .section.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .section, .section-title, .slide, .spark {
+      transition: none !important;
+      animation: none !important;
+      transform: none !important;
+    }
+  }
 `;
-document.head.appendChild(sparkStyle);
+document.head.appendChild(animationStyle);
 
-// Parallax Effect with Reduced Tilt
+// Parallax Effect (Desktop Only)
 function addParallaxEffect(section) {
-  if (document.body.classList.contains('sobrio-mode')) return;
   const handleMouseMove = debounce((e) => {
     const rect = section.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    const moveX = (e.clientX - centerX) * 0.01;
-    const moveY = (e.clientY - centerY) * 0.01;
-    const rotate = (e.clientX - centerX) * 0.002;
-    section.style.transform = `translateY(0) translate(${moveX}px, ${moveY}px) rotate(${rotate}deg)`;
-  }, 10);
+    const moveX = (e.clientX - centerX) * 0.005;
+    const moveY = (e.clientY - centerY) * 0.005;
+    section.style.transform = `translate(${moveX}px, ${moveY}px)`;
+  }, 5);
   section.addEventListener('mousemove', handleMouseMove);
   section.addEventListener('mouseleave', () => {
-    section.style.transform = 'translateY(0)';
+    section.style.transform = 'translate(0, 0)';
   }, { once: true });
 }
 
@@ -110,20 +139,10 @@ function addPulseEffect(section) {
   if (document.body.classList.contains('sobrio-mode')) return;
   const title = section.querySelector('.section-title');
   if (title) {
-    title.style.animation = 'pulse 1.8s ease-in-out 2';
-    setTimeout(() => title.style.animation = '', 3600);
+    title.style.animation = 'pulse 1.5s ease-in-out 1';
+    setTimeout(() => title.style.animation = '', 1500);
   }
 }
-
-const pulseStyle = document.createElement('style');
-pulseStyle.innerHTML = `
-  @keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.03); opacity: 0.95; }
-    100% { transform: scale(1); opacity: 1; }
-  }
-`;
-document.head.appendChild(pulseStyle);
 
 // GIF/Photo Toggle
 const gifToggle = document.getElementById('gif-toggle');
@@ -136,7 +155,7 @@ if (gifToggle) {
   });
 }
 
-// Slideshow with Crossfade
+// Slideshow with Crossfade and Touch Support
 let slideIndex = 0;
 const imgurSlides = document.getElementById('imgur-slides');
 
@@ -148,6 +167,13 @@ function loadImgurPhotos() {
     'https://drscdn.500px.org/photo/1100494818/q%3D80_m%3D600/v2?sig=8736ed36f16ca11f2f79383663bbd8ba5da21ba698dffa3e6307f3a2afa05e20',
     'https://drscdn.500px.org/photo/1095383565/q%3D80_m%3D600/v2?sig=082a17336c987e693b6a4d3a46b4dcd669b95e4782e1790d60322aa93bc01690'
   ];
+
+  // Preload first image
+  const preloadLink = document.createElement('link');
+  preloadLink.rel = 'preload';
+  preloadLink.as = 'image';
+  preloadLink.href = imgurPhotoUrls[0];
+  document.head.appendChild(preloadLink);
 
   if (imgurPhotoUrls.length === 0) {
     imgurSlides.innerHTML = '<p>No photos specified. Please add Imgur URLs in the script.</p>';
@@ -162,16 +188,20 @@ function loadImgurPhotos() {
   });
 
   document.querySelectorAll('.slide img').forEach(img => {
-    img.addEventListener('mouseenter', () => {
+    const handleInteraction = () => {
       if (!document.body.classList.contains('sobrio-mode')) {
         img.style.transform = 'scale(1.05)';
         img.style.filter = `hue-rotate(${Math.random() * 60}deg)`;
       }
-    });
-    img.addEventListener('mouseleave', () => {
+    };
+    const resetInteraction = () => {
       img.style.transform = 'scale(1)';
       img.style.filter = '';
-    });
+    };
+    img.addEventListener('mouseenter', handleInteraction);
+    img.addEventListener('touchstart', handleInteraction, { passive: true });
+    img.addEventListener('mouseleave', resetInteraction);
+    img.addEventListener('touchend', resetInteraction, { passive: true });
   });
 
   showSlides();
@@ -210,9 +240,9 @@ const handleScroll = debounce(() => {
   } else {
     header.classList.remove('shrunk');
   }
-}, 10);
+}, 10); // Slightly increased for mobile stability
 
-window.addEventListener('scroll', handleScroll);
+window.addEventListener('scroll', handleScroll, { passive: true });
 
 // Toggle Fancy Mode
 const toggleFancyModeButton = document.getElementById('toggleFancyMode');
@@ -230,7 +260,7 @@ if (toggleFancyModeButton) {
       title.style.animation = '';
     });
     document.querySelectorAll('.section').forEach(section => {
-      section.style.transform = 'translateY(0)';
+      section.style.transform = 'translate(0, 0)';
     });
   });
 }
