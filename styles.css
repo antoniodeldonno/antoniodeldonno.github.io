@@ -1012,3 +1012,155 @@ nav ul li {
     0 0 20px #00ffff,
     0 0 40px #00ffff;
 }
+
+/* Slideshow migliorato */
+.slideshow-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.slides {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+
+.slide {
+  min-width: 100%;
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+.slide img {
+  width: 100%;
+  height: 580px;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  transition: transform 0.4s ease;
+}
+
+.slide img:hover {
+  transform: scale(1.03);
+}
+
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.75);
+  color: #00ffff;
+  border: 2px solid #00ffff;
+  padding: 16px 20px;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 1001;
+  transition: all 0.3s ease;
+}
+
+.prev:hover, .next:hover {
+  background-color: rgba(0,255,255,0.2);
+  box-shadow: 0 0 15px #00ffff;
+}
+
+.prev { left: 20px; }
+.next { right: 20px; }
+
+.dots {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 0 6px;
+  background: rgba(0, 255, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #00ffff;
+}
+
+.dot.active {
+  background: #00ffff;
+  box-shadow: 0 0 10px #00ffff;
+  transform: scale(1.3);
+}
+
+@media (max-width: 768px) {
+  .slide img {
+    height: 380px;
+  }
+  .prev, .next {
+    padding: 12px 16px;
+    font-size: 22px;
+  }
+}
+
+.slides {
+  display: block;
+  position: relative;
+}
+
+.slide {
+  display: none;
+  width: 100%;
+}
+
+.slide.active, .slide:first-child {
+  display: block;
+}
+
+.slide img {
+  width: 100%;
+  height: 580px;           /* o 500px se preferisci più basso */
+  object-fit: contain;     /* mantiene le proporzioni */
+  border-radius: 12px;
+  background: #111;
+}
+
+.slideshow-container {
+  position: relative;
+  height: 600px;           /* Altezza fissa */
+  overflow: hidden;
+}
+
+.slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.slide.active {
+  display: block;
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+
