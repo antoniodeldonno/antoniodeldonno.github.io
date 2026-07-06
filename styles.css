@@ -1163,4 +1163,38 @@ nav ul li {
   border-radius: 12px;
 }
 
+/* Tutti i link gialli neon */
+a.neon-link,
+.section-list a,
+.glitch-list-item a {
+  color: #ffff00 !important;
+  text-shadow: 
+    0 0 5px #ffff00,
+    0 0 10px #ffff00,
+    0 0 20px #ffff00;
+  transition: all 0.3s ease;
+}
+
+a.neon-link:hover,
+.section-list a:hover,
+.glitch-list-item a:hover {
+  color: #ffffff !important;
+  text-shadow: 
+    0 0 10px #ffff00,
+    0 0 20px #ffff00,
+    0 0 30px #ffff00;
+  transform: translateX(4px);
+}
+
+header h1 {
+  font-size: 2.8rem !important;     /* più grande */
+  line-height: 1.1;
+  margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2.8rem !important;
+  }
+}
 
