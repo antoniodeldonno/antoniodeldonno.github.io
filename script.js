@@ -20,13 +20,11 @@ function debounce(func, wait) {
 let idleTimer;
 let isFractalActive = false;
 let fractalCanvas = null;
-let currentFractalIndex = 0;   // 0 = Mandelbrot, 1 = Julia, 2 = Hyperbolic
-
+let currentFractalIndex = 0;
 const fractalTypes = ['mandelbrot', 'julia', 'hyperbolic'];
 
 function createFractalCanvas() {
   if (fractalCanvas) return fractalCanvas;
-
   fractalCanvas = document.createElement('canvas');
   fractalCanvas.id = 'fractal-overlay';
   fractalCanvas.style.position = 'fixed';
@@ -36,9 +34,10 @@ function createFractalCanvas() {
   fractalCanvas.style.height = '100%';
   fractalCanvas.style.zIndex = '9998';
   fractalCanvas.style.opacity = '0';
-  fractalCanvas.style.transition = 'opacity 1.8s ease';
+  fractalCanvas.style.transition = 'opacity 2s ease';
   fractalCanvas.style.pointerEvents = 'none';
-  fractalCanvas.style.mixBlendMode = 'screen';
+  fractalCanvas.style.mixBlendMode = 'multiply';
+  fractalCanvas.style.filter = 'contrast(0.9) brightness(0.85)'; // Slightly less dark
   document.body.appendChild(fractalCanvas);
   return fractalCanvas;
 }
@@ -47,28 +46,27 @@ function drawFractal(canvas, type) {
   const ctx = canvas.getContext('2d');
   const w = window.innerWidth;
   const h = window.innerHeight;
-  
+ 
   canvas.width = w;
   canvas.height = h;
-
   const time = Date.now() / 1000;
-  const maxIter = 75;
+  const maxIter = 70;
 
-  for (let x = 0; x < w; x += 2) {
-    for (let y = 0; y < h; y += 2) {
+  for (let x = 0; x < w; x += 3) {
+    for (let y = 0; y < h; y += 3) {
       let cx, cy, hueOffset = 0;
 
       if (type === 'mandelbrot') {
         cx = (x - w * 0.5) / (w * 0.27) - 0.68;
         cy = (y - h * 0.5) / (w * 0.27);
-        hueOffset = 20;
-      } 
+        hueOffset = 12;
+      }
       else if (type === 'julia') {
         cx = (x - w * 0.5) / (w * 0.33);
         cy = (y - h * 0.5) / (w * 0.33);
         const cReal = -0.79 + Math.sin(time * 0.12) * 0.08;
         const cImag = 0.15 + Math.cos(time * 0.1) * 0.07;
-        
+       
         let zx = cx, zy = cy;
         let iter = 0;
         while (zx*zx + zy*zy < 4 && iter < maxIter) {
@@ -77,21 +75,19 @@ function drawFractal(canvas, type) {
           zx = temp;
           iter++;
         }
-        const color = (iter * 7 + time * 25) % 360;
-        ctx.fillStyle = `hsl(${color}, 95%, 70%)`;
-        ctx.fillRect(x, y, 2, 2);
+        const color = (iter * 6 + time * 20) % 360;
+        ctx.fillStyle = `hsla(${color}, 72%, 52%, 0.65)`; // A bit brighter
+        ctx.fillRect(x, y, 3, 3);
         continue;
-      } 
+      }
       else { // hyperbolic
         cx = (x - w * 0.5) / (w * 0.26);
         cy = (y - h * 0.5) / (w * 0.26);
-        hueOffset = 180;
+        hueOffset = 165;
       }
 
-      // Standard iteration for Mandelbrot / Hyperbolic
       let zx = 0, zy = 0;
       let iter = 0;
-
       while (zx * zx + zy * zy < 4 && iter < maxIter) {
         const temp = zx * zx - zy * zy + cx;
         zy = 2 * zx * zy + cy;
@@ -100,9 +96,9 @@ function drawFractal(canvas, type) {
       }
 
       if (iter < maxIter) {
-        const hue = (iter * 9 + time * 15 + hueOffset) % 360;
-        ctx.fillStyle = `hsl(${hue}, 92%, 68%)`;
-        ctx.fillRect(x, y, 2, 2);
+        const hue = (iter * 8 + time * 14 + hueOffset) % 360;
+        ctx.fillStyle = `hsla(${hue}, 75%, 46%, 0.6)`; // More present but still moody
+        ctx.fillRect(x, y, 3, 3);
       }
     }
   }
@@ -111,21 +107,17 @@ function drawFractal(canvas, type) {
 function startFractal() {
   if (isFractalActive) return;
   isFractalActive = true;
-
   const canvas = createFractalCanvas();
   const currentType = fractalTypes[currentFractalIndex];
-  
-  canvas.style.opacity = '0.8';
+ 
+  canvas.style.opacity = '0.37';           // Increased a bit
   drawFractal(canvas, currentType);
-
-  // Prossima volta userà il successivo
   currentFractalIndex = (currentFractalIndex + 1) % 3;
 }
 
 function stopFractal() {
   if (!isFractalActive) return;
   isFractalActive = false;
-
   if (fractalCanvas) {
     fractalCanvas.style.opacity = '0';
   }
