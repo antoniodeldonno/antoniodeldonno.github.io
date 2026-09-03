@@ -185,7 +185,9 @@ function initSlideshow() {
     "https://i.imgur.com/HGPUVRV.jpg",
     "https://i.imgur.com/H3BPatM.jpg",
     "https://i.imgur.com/xQgwxyu.jpg",
-    "https://i.imgur.com/PNI9ayY.jpg"
+    "https://i.imgur.com/PNI9ayY.jpg",
+    "https://i.imgur.com/lptpO27.jpg",
+    "https://i.imgur.com/AVMyrfS.jpg"
   ];
 
   photoUrls = photoUrls.sort(() => Math.random() - 0.5);
