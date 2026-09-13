@@ -179,8 +179,8 @@
 })();
 
 
-/* Legacy fractals + section-specific mathematical motion + live NCG&T seminar feed. */
-(() => {
+/* Mathematical motion: bounded rendering and one cancellable idle cycle. */
+function initMathematicalMotion() {
   'use strict';
   const body = document.body;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -195,6 +195,8 @@
     photography: {kind:'spiral', label:'golden spiral / composition', color:'#ff9bdc'},
     contact: {kind:'field', label:'vector field / connection', color:'#5ffff1'}
   };
+  const sectionObserver=new IntersectionObserver(entries=>entries.forEach(entry=>entry.target.classList.toggle('motion-offscreen',!entry.isIntersecting)),{rootMargin:'180px'});
+  document.querySelectorAll('.section').forEach(section=>sectionObserver.observe(section));
   const visuals = [];
   Object.keys(motifMap).forEach(id => {
     const section = document.getElementById(id);
@@ -323,20 +325,23 @@
     else drawField(item,phase);
   }
   let visualRaf=0, visualLast=0;
+  const visibleMotifs=new Set();
+  const motifObserver=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{const item=visuals.find(v=>v.canvas===entry.target);if(entry.isIntersecting)visibleMotifs.add(item);else visibleMotifs.delete(item);});
+    resumeVisuals();
+  },{rootMargin:'120px'});
+  visuals.forEach(item=>motifObserver.observe(item.canvas));
   function renderVisuals(now){
     visualRaf=0;
-    if(blocked())return;
-    if(now-visualLast<52){visualRaf=requestAnimationFrame(renderVisuals);return;}
+    if(blocked()||!visibleMotifs.size)return;
+    if(now-visualLast<32){visualRaf=requestAnimationFrame(renderVisuals);return;}
     visualLast=now;
     const phase=now/1000;
-    visuals.forEach(item=>{
-      const rect=item.section.getBoundingClientRect();
-      if(rect.bottom>-120&&rect.top<window.innerHeight+120)drawVisual(item,phase);
-    });
+    visibleMotifs.forEach(item=>drawVisual(item,phase));
     visualRaf=requestAnimationFrame(renderVisuals);
   }
   visuals.forEach(item=>drawVisual(item,0));
-  function resumeVisuals(){if(!blocked()&&!visualRaf)visualRaf=requestAnimationFrame(renderVisuals);}
+  function resumeVisuals(){if(!blocked()&&visibleMotifs.size&&!visualRaf)visualRaf=requestAnimationFrame(renderVisuals);}
   resumeVisuals();
 
   /* A low-resolution Mandelbrot / Julia / hyperbolic cycle, close to the old idle effect. */
@@ -351,16 +356,26 @@
     if(!fractalCanvas)return;
     fractalCanvas.width=Math.min(520,Math.max(260,Math.floor(window.innerWidth*.48)));
     fractalCanvas.height=Math.min(360,Math.max(180,Math.floor(window.innerHeight*.38)));
-    if(fractalActive)renderFractal(performance.now());
+    frameImage=null;
   }
+  // Render in short cancellable slices; never hold up scrolling for a whole image.
+  let frameTask=0, frameEpoch=0, frameImage=null;
+  function hueToRgb(p0,q0,tc){if(tc<0)tc+=6;if(tc>6)tc-=6;if(tc<1)return p0+(q0-p0)*6*tc;if(tc<3)return q0;if(tc<4)return p0+(q0-p0)*(4-tc);return p0;}
   function renderFractal(now){
+    fractalRaf=0;
     if(!fractalCtx||!fractalCanvas||!fractalActive||blocked())return;
-    if(now-lastFractal<72){fractalRaf=requestAnimationFrame(renderFractal);return;}
-    lastFractal=now;
-    const w=fractalCanvas.width,h=fractalCanvas.height,img=fractalCtx.createImageData(w,h),data=img.data;
-    const t=now/1000, maxIter=48, zoom=1.05+.08*Math.sin(t*.18), kind=fractalKinds[fractalKind];
-    const cJReal=-.79+Math.sin(t*.12)*.08, cJImag=.15+Math.cos(t*.1)*.07;
-    for(let py=0;py<h;py++){
+    const epoch=frameEpoch;
+    const w=fractalCanvas.width,h=fractalCanvas.height;
+    if(!frameImage||frameImage.width!==w||frameImage.height!==h)frameImage=fractalCtx.createImageData(w,h);
+    const img=frameImage,data=img.data;
+    const t=now/1000,maxIter=48,zoom=1.05+.08*Math.sin(t*.18),kind=fractalKinds[fractalKind];
+    const cJReal=-.79+Math.sin(t*.12)*.08,cJImag=.15+Math.cos(t*.1)*.07;
+    let py=0;
+    function slice(){
+      frameTask=0;
+      if(epoch!==frameEpoch||!fractalActive||blocked())return;
+      const deadline=performance.now()+3;
+      do {
       for(let px=0;px<w;px++){
         const i=(py*w+px)*4, sx=(px-w*.52)/(w*.30*zoom), sy=(py-h*.5)/(w*.30*zoom);
         let zx,zy,cx,cy;
@@ -371,29 +386,34 @@
         for(;iter<maxIter&&zx*zx+zy*zy<4;iter++){const xx=zx*zx-zy*zy+cx;zy=2*zx*zy+cy;zx=xx;}
         if(iter===maxIter){data[i+3]=0;continue;}
         const hue=(fractalKind*112+iter*8.8+t*9+Math.hypot(sx,sy)*18)%360, light=48+Math.min(25,iter*.6), alpha=Math.min(150,20+iter*3.2);
-        const c='hsl('+hue+' 92% '+light+'%)';
-        const match=c.match(/hsl\(([-\d.]+)\s+([-\d.]+)%\s+([-\d.]+)%\)/);const h0=Number(match[1])/60,s0=Number(match[2])/100,l0=Number(match[3])/100;
-        const q=l0<.5?l0*(1+s0):l0+s0-l0*s0,p=2*l0-q, hue2=(h0+2)%6, hue3=(h0+4)%6;
-        const hueToRgb=(p0,q0,tc)=>{if(tc<0)tc+=6;if(tc>6)tc-=6;if(tc<1)return p0+(q0-p0)*6*tc;if(tc<3)return q0;if(tc<4)return p0+(q0-p0)*(4-tc);return p0;};
+        const h0=hue/60,s0=.92,l0=light/100;
+        const q=l0<.5?l0*(1+s0):l0+s0-l0*s0,p=2*l0-q;
         data[i]=Math.round(hueToRgb(p,q,h0+2)*255);data[i+1]=Math.round(hueToRgb(p,q,h0)*255);data[i+2]=Math.round(hueToRgb(p,q,h0-2)*255);data[i+3]=Math.round(alpha);
       }
+
+        py++;
+      } while(py<h&&performance.now()<deadline);
+      if(py<h){frameTask=setTimeout(slice,0);return;}
+      fractalCtx.putImageData(img,0,0);
+      frameTask=setTimeout(()=>{frameTask=0;if(epoch===frameEpoch&&fractalActive&&!blocked())fractalRaf=requestAnimationFrame(renderFractal);},Math.max(0,72-(performance.now()-now)));
     }
-    fractalCtx.putImageData(img,0,0);fractalRaf=requestAnimationFrame(renderFractal);
+    slice();
   }
-  function stopFractal(){fractalActive=false;clearTimeout(fractalTimer);cancelAnimationFrame(fractalRaf);fractalRaf=0;if(fractalCanvas)fractalCanvas.style.opacity='0';}
+  function stopFractal(){frameEpoch++;clearTimeout(frameTask);frameTask=0;fractalActive=false;clearTimeout(fractalTimer);cancelAnimationFrame(fractalRaf);fractalRaf=0;if(fractalCanvas)fractalCanvas.style.opacity='0';}
   function startFractal(){
     if(fractalActive||blocked())return;
-    ensureFractal();fractalKind=(fractalKind+1)%fractalKinds.length;fractalActive=true;fractalCanvas.style.opacity='.22';lastFractal=0;renderFractal(performance.now());
+    ensureFractal();resizeFractal();fractalKind=(fractalKind+1)%fractalKinds.length;fractalActive=true;fractalCanvas.style.opacity='.22';lastFractal=0;renderFractal(performance.now());
     fractalTimer=setTimeout(()=>{stopFractal();armIdle();},10500);
   }
-  function armIdle(){stopFractal();clearTimeout(idleTimer);if(!reduced.matches&&!document.hidden)idleTimer=setTimeout(startFractal,5200);}
+  function armIdle(){stopFractal();clearTimeout(idleTimer);if(!blocked())idleTimer=setTimeout(startFractal,5200);}
   ['pointermove','pointerdown','wheel','touchstart','keydown','scroll'].forEach(event=>window.addEventListener(event,armIdle,{passive:true}));
-  window.addEventListener('resize',resizeFractal,{passive:true});
-  reduced.addEventListener?.('change',armIdle);
+  window.addEventListener('resize',armIdle,{passive:true});
+  reduced.addEventListener?.('change',()=>{armIdle();resumeVisuals();});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stopFractal();armIdle();resumeVisuals();});
   document.getElementById('toggleFancyMode')?.addEventListener('click',()=>setTimeout(()=>{armIdle();resumeVisuals();},0));
   room?.addEventListener('close',()=>setTimeout(()=>{armIdle();resumeVisuals();},0));
   new MutationObserver(()=>{if(blocked())stopFractal();else{armIdle();resumeVisuals();}}).observe(body,{attributes:true,attributeFilter:['class']});
   armIdle();
 
-})();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMathematicalMotion,{once:true});else initMathematicalMotion();
