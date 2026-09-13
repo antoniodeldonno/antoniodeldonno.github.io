@@ -161,3 +161,10 @@ body.sobrio-mode #fractal-overlay,body.room-open #fractal-overlay{opacity:0!impo
 .seminar-playlist-card{position:relative;border:1px dashed #bd84c675;border-radius:8px;padding:18px;background:linear-gradient(135deg,#111125b8,#0d1921b8);box-shadow:inset 0 0 24px #5ffff10b}
 .seminar-playlist-card>*{position:relative;z-index:1}.seminar-playlist-card h4{font-size:1.3rem;font-weight:400;line-height:1.25;margin:10px 0 0}.seminar-playlist-note{margin:10px 0 0;color:#bdb8d3;font-size:1rem}.seminar-playlist-card .youtube-wrapper{margin:16px 0 0}
 @media(max-width:700px){.seminar-playlist-card{padding:14px}.seminar-playlist-card h4{font-size:1.15rem}}
+/* Suspend invisible effects without changing the visible design. */
+.section.motion-offscreen::before,.section.motion-offscreen::after,.section.motion-offscreen *,.section.motion-offscreen *::before,.section.motion-offscreen *::after{animation-play-state:paused!important}
+body.is-backgrounded *::before,body.is-backgrounded *::after,body.is-backgrounded::after{animation-play-state:paused!important}
+.container,.section-list li,.thoughts-paper{overflow-wrap:anywhere}
+@media(max-width:400px){.container{padding-inline:14px}.thoughts-paper{padding-inline:22px}.slideshow-container{height:clamp(260px,90vw,380px)}}
+
+@media(max-width:768px){nav ul{max-height:calc(100dvh - 82px);overflow-y:auto;overscroll-behavior:contain;flex-wrap:nowrap;justify-content:flex-start}nav li{flex-shrink:0}}
