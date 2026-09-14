@@ -37,21 +37,6 @@
       }
     }
 
-    // Progressive enhancement: content stays readable if JS or a CDN fails.
-    if ('IntersectionObserver' in window && !reduced.matches) {
-      const reveal = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.remove('is-pending');
-            reveal.unobserve(entry.target);
-          }
-        });
-      }, {threshold: 0, rootMargin: '0px 0px -35px 0px'});
-      document.querySelectorAll('.section').forEach(section => {
-        if (section.getBoundingClientRect().top > window.innerHeight) section.classList.add('is-pending');
-        reveal.observe(section);
-      });
-    }
     const hamburger = document.querySelector('.hamburger');
     const nav = document.getElementById('main-navigation');
     function closeNav(){nav.classList.remove('active');hamburger.setAttribute('aria-expanded','false');hamburger.textContent='☰';}
@@ -113,7 +98,7 @@
       [...dots.children].forEach((dot,i)=>{dot.classList.toggle('active',i===index);dot.setAttribute('aria-pressed',String(i===index));});
       playback();
     }
-    load(0);
+    if ('IntersectionObserver' in window) {const preloadPhotos=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){load(0);preloadPhotos.disconnect();}},{rootMargin:'600px'});preloadPhotos.observe(gallery);} else load(0);
     document.querySelector('.prev').addEventListener('click',()=>show(requested-1));
     document.querySelector('.next').addEventListener('click',()=>show(requested+1));
     gallery.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();show(requested+(e.key==='ArrowRight'?1:-1));}});
@@ -185,7 +170,7 @@ function initMathematicalMotion() {
   const body = document.body;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const room = document.getElementById('thoughts-room');
-  const blocked = () => reduced.matches || document.hidden || body.classList.contains('sobrio-mode') || body.classList.contains('room-open') || (room && room.open);
+  const blocked = () => body.classList.contains('is-scrolling') || reduced.matches || document.hidden || body.classList.contains('sobrio-mode') || body.classList.contains('room-open') || (room && room.open);
 
   /* Each section gets a restrained mathematical motif layered over its original GIF. */
   const motifMap = {
@@ -324,24 +309,47 @@ function initMathematicalMotion() {
     else if(item.spec.kind==='spiral')drawSpiral(item,phase);
     else drawField(item,phase);
   }
-  let visualRaf=0, visualLast=0;
+  let visualRaf=0, visualLast=null;
+  const visualInterval=1000/30;
   const visibleMotifs=new Set();
+  // Local clocks preserve each shape across scrolling and visibility pauses.
+  visuals.forEach(item=>{item.phase=0;item.lastTick=null;item.runTime=0;drawVisual(item,0);});
   const motifObserver=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{const item=visuals.find(v=>v.canvas===entry.target);if(entry.isIntersecting)visibleMotifs.add(item);else visibleMotifs.delete(item);});
+    entries.forEach(entry=>{
+      const item=visuals.find(v=>v.canvas===entry.target);
+      if(!item)return;
+      item.lastTick=null;item.runTime=0;
+      if(entry.isIntersecting)visibleMotifs.add(item);else visibleMotifs.delete(item);
+    });
     resumeVisuals();
   },{rootMargin:'120px'});
   visuals.forEach(item=>motifObserver.observe(item.canvas));
+  function pauseVisualClocks(){
+    visualLast=null;
+    visibleMotifs.forEach(item=>{item.lastTick=null;item.runTime=0;});
+  }
   function renderVisuals(now){
     visualRaf=0;
-    if(blocked()||!visibleMotifs.size)return;
-    if(now-visualLast<32){visualRaf=requestAnimationFrame(renderVisuals);return;}
-    visualLast=now;
-    const phase=now/1000;
-    visibleMotifs.forEach(item=>drawVisual(item,phase));
+    if(blocked()||!visibleMotifs.size){pauseVisualClocks();return;}
+    if(visualLast===null)visualLast=now-visualInterval;
+    const elapsed=now-visualLast;
+    if(elapsed+.5<visualInterval){visualRaf=requestAnimationFrame(renderVisuals);return;}
+    // Retain the fractional frame remainder instead of drifting between intervals.
+    visualLast+=Math.max(1,Math.floor((elapsed+.5)/visualInterval))*visualInterval;
+    visibleMotifs.forEach(item=>{
+      const dt=item.lastTick===null?0:Math.min((now-item.lastTick)/1000,.05);
+      item.lastTick=now;
+      item.runTime+=dt;
+      const ramp=Math.min(1,item.runTime/.35);
+      item.phase+=dt*ramp*ramp*(3-2*ramp);
+      drawVisual(item,item.phase);
+    });
     visualRaf=requestAnimationFrame(renderVisuals);
   }
-  visuals.forEach(item=>drawVisual(item,0));
-  function resumeVisuals(){if(!blocked()&&visibleMotifs.size&&!visualRaf)visualRaf=requestAnimationFrame(renderVisuals);}
+  function resumeVisuals(){
+    if(blocked()||!visibleMotifs.size){pauseVisualClocks();return;}
+    if(!visualRaf)visualRaf=requestAnimationFrame(renderVisuals);
+  }
   resumeVisuals();
 
   /* A low-resolution Mandelbrot / Julia / hyperbolic cycle, close to the old idle effect. */
@@ -417,3 +425,93 @@ function initMathematicalMotion() {
 
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMathematicalMotion,{once:true});else initMathematicalMotion();
+/* A single viewport-sized backdrop: paths are painted once, motion is composited. */
+function initGeometryAndMedia(){
+  const body=document.body, reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const backdrop=document.createElement('div');backdrop.id='geometry-backdrop';backdrop.setAttribute('aria-hidden','true');
+  const base=document.getElementById('hyperbolic-field');
+  body.prepend(backdrop);
+  const layers=new Map();
+  function layer(id,canvas){const host=document.createElement('div');host.className='geometry-layer';host.dataset.geometry=id;host.append(canvas);backdrop.append(host);layers.set(id,host);}
+  if(base)layer('about',base);
+  const palette=['#7affe288','#bf81ff80','#ff84dd78'];
+  function artwork(kind){
+    const canvas=document.createElement('canvas');canvas.width=canvas.height=960;
+    const ctx=canvas.getContext('2d');if(!ctx)return canvas;
+    ctx.translate(480,480);ctx.lineWidth=1.1;ctx.lineJoin='round';
+    function path(points,color=0){ctx.strokeStyle=palette[color%3];ctx.beginPath();let first=true;for(const point of points){if(!point){first=true;continue;}if(first){ctx.moveTo(...point);first=false;}else ctx.lineTo(...point);}ctx.stroke();}
+    if(kind==='mathematics'){
+      // Real loci of the algebraic family y^2 = x^3 - 1.4x + c.
+      for(let k=0;k<13;k++)for(const sign of [-1,1]){const pts=[];for(let i=0;i<=540;i++){const x=-2+i*4.25/540,y2=x*x*x-1.4*x+(k-6)*.17;pts.push(y2>=0?[x*178,sign*Math.sqrt(y2)*150]:null);}path(pts,k);}
+      for(let k=1;k<5;k++){ctx.strokeStyle='#a7a2dd28';ctx.beginPath();ctx.ellipse(0,0,70*k,90*k,-.15,0,Math.PI*2);ctx.stroke();}
+    }else if(kind==='music'){
+      // The holomorphic map w = z^2 sends a rectangular grid to two parabola families.
+      for(let family=0;family<2;family++)for(let k=-9;k<=9;k++){
+        const a=k*.17,pts=[];for(let i=0;i<=220;i++){const b=-1.8+i*3.6/220,x=family?a:b,y=family?b:a;pts.push([92*(x*x-y*y),184*x*y]);}path(pts,k+12+family);
+      }
+      for(let k=1;k<5;k++){const pts=[];for(let i=0;i<=180;i++){const t=i*Math.PI/90,r=k*78;pts.push([r*Math.cos(t),r*Math.sin(t)]);}path(pts,k);}
+    }else{
+      // A plane grid and conics under a projective homography [x:y:1] -> [x:y:1+.3x+.18y].
+      const project=(x,y)=>{const d=1+.3*x+.18*y;return [x*190/d,y*155/d];};
+      for(let k=-7;k<=7;k++){const a=k*.18;path([project(a,-1.3),project(a,1.3)],k+9);path([project(-1.3,a),project(1.3,a)],k+10);}
+      for(let k=1;k<=5;k++){const pts=[];for(let i=0;i<=180;i++){const t=i*Math.PI/90;pts.push(project(.23*k*Math.cos(t),.23*k*Math.sin(t)));}path(pts,k);}
+      ctx.strokeStyle='#7affe24d';ctx.setLineDash([3,8]);ctx.beginPath();ctx.moveTo(-450,-310);ctx.lineTo(450,-310);ctx.stroke();ctx.setLineDash([]);
+    }
+    // Bake the soft edge into the pixels once, without a live CSS blur or mask.
+    ctx.globalCompositeOperation='destination-in';const fade=ctx.createRadialGradient(0,0,160,0,0,475);fade.addColorStop(0,'#fff');fade.addColorStop(1,'transparent');ctx.fillStyle=fade;ctx.fillRect(-480,-480,960,960);
+    return canvas;
+  }
+  ['mathematics','music','photography'].forEach(id=>layer(id,artwork(id)));
+  function select(id){if(!layers.has(id))id='about';if(backdrop.dataset.active===id)return;backdrop.dataset.active=id;layers.forEach((host,key)=>host.classList.toggle('is-current',key===id));}
+  select('about');
+  const sections=[...document.querySelectorAll('main>.section')];
+  let geometryObserver,resizeTimer;
+  function observeGeometry(){
+    geometryObserver?.disconnect();const h=innerHeight;
+    geometryObserver=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting)select(e.target.id);},{rootMargin:`-${Math.floor(h*.25)}px 0px -${Math.floor(h*.65)}px 0px`,threshold:0});
+    sections.forEach(s=>geometryObserver.observe(s));
+    const target=sections.find(s=>{const r=s.getBoundingClientRect();return r.top<=h*.35&&r.bottom>h*.25;});select(target?.id||'about');
+  }
+  observeGeometry();window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(observeGeometry,160);},{passive:true});
+  // Pause expensive decorative repaint while scrolling, resuming only once at rest.
+  let scrollTimer=0,lastScroll=-Infinity;
+  window.addEventListener('scroll',()=>{lastScroll=performance.now();if(!body.classList.contains('is-scrolling'))body.classList.add('is-scrolling');clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>body.classList.remove('is-scrolling'),150);},{passive:true});
+  const accents=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('motion-paused',!e.isIntersecting)),{rootMargin:'60px'});
+  document.querySelectorAll('h1,.section-title,.subsection-title').forEach(el=>accents.observe(el));
+
+  // Warm the first pair ahead of the music section; limit network/JS startup concurrency.
+  const players=[...document.querySelectorAll('.spotify-wrapper iframe[data-src]')];
+  const queue=[];let busy=0,pumpTimer=0;
+  function enqueue(frame){if(!frame||frame.dataset.started||queue.includes(frame))return;queue.push(frame);schedulePump();}
+  function schedulePump(){clearTimeout(pumpTimer);pumpTimer=setTimeout(pump,180);}
+  function pump(){
+    if(document.hidden||performance.now()-lastScroll<220){schedulePump();return;}
+    while(busy<2&&queue.length){const frame=queue.shift();if(frame.dataset.started)continue;busy++;frame.dataset.started='true';let finished=false;
+      const done=()=>{if(finished)return;finished=true;busy--;clearTimeout(timeout);schedulePump();};
+      const timeout=setTimeout(done,10000);
+      frame.addEventListener('load',()=>{frame.closest('.spotify-wrapper').classList.add('player-ready');done();},{once:true});
+      frame.src=frame.dataset.src;
+    }
+  }
+  const nearPlayers=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){enqueue(e.target.querySelector('iframe'));nearPlayers.unobserve(e.target);}}),{rootMargin:'800px'});
+  document.querySelectorAll('.spotify-wrapper').forEach(p=>nearPlayers.observe(p));
+  const warmMusic=()=>players.slice(0,2).forEach(enqueue);
+  const music=document.getElementById('music');
+  const nearMusic=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){warmMusic();nearMusic.disconnect();}},{rootMargin:'1000px'});nearMusic.observe(music);
+  const musicLink=document.querySelector('nav a[href="#music"]');
+  musicLink?.addEventListener('pointerenter',warmMusic,{once:true});musicLink?.addEventListener('focus',warmMusic,{once:true});musicLink?.addEventListener('click',warmMusic);
+  function warmAfterLoad(){setTimeout(()=>{if(navigator.connection?.saveData)return;warmMusic();},2500);}
+  if(document.readyState==='complete')warmAfterLoad();else window.addEventListener('load',warmAfterLoad,{once:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedulePump();});
+  document.querySelectorAll('.seminar-preview').forEach(button=>button.addEventListener('click',()=>{
+    const frame=button.parentElement.querySelector('iframe');if(!frame)return;
+    const videoURL=new URL(frame.dataset.src);videoURL.searchParams.set("autoplay","1");frame.src=videoURL.href;frame.hidden=false;button.hidden=true;frame.focus();
+  },{once:true}));
+
+  // Touch navigation for the gallery, without capturing vertical page scrolling.
+  const gallery=document.querySelector('.slideshow-container');let touchStart=null;
+  gallery.addEventListener('touchstart',e=>{if(e.touches.length===1)touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
+  gallery.addEventListener('touchend',e=>{if(!touchStart||!e.changedTouches.length)return;const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;touchStart=null;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5)gallery.querySelector(dx<0?'.next':'.prev')?.click();},{passive:true});
+  gallery.addEventListener('touchcancel',()=>{touchStart=null;},{passive:true});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initGeometryAndMedia,{once:true});else initGeometryAndMedia();
