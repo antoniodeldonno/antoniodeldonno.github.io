@@ -1,3 +1,5 @@
+/* Antonio Del Donno — the original neon / CRT palette, with continuous motion. */
+
 :root{color-scheme:dark;--cyan:#5ffff1;--pink:#ff62d5;--yellow:#eeff72;--ease:cubic-bezier(.22,1,.36,1)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:24px}
@@ -251,3 +253,10 @@ body.room-open #geometry-backdrop{opacity:.15}
 @media(prefers-reduced-motion:reduce){#geometry-backdrop canvas,#geometry-backdrop #hyperbolic-field{animation:none!important}.geometry-layer{transition:none}}
 
 @media(max-width:768px){header::before{content:"";position:fixed;inset:0 0 auto;height:calc(max(12px,env(safe-area-inset-top)) + 52px);background:#0d1324f5;border-bottom:1px solid #5ffff11c;z-index:55;pointer-events:none}#geometry-backdrop canvas,#geometry-backdrop #hyperbolic-field{width:140vw;right:-45vw;top:calc(50% - 70vw)}}
+
+/* Original mathematical artwork, with a gentle lift in presence and motion. */
+.geometry-layer.is-current{opacity:.74}
+#geometry-backdrop canvas,#geometry-backdrop #hyperbolic-field{animation-duration:32s}
+#geometry-backdrop #hyperbolic-field{animation-duration:112s}
+body:not(.sobrio-mode) .math-visual{filter:brightness(1.18)}
+@media(max-width:768px){.geometry-layer.is-current{opacity:.5}}
