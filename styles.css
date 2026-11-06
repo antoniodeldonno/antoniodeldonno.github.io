@@ -260,3 +260,22 @@ body.room-open #geometry-backdrop{opacity:.15}
 #geometry-backdrop #hyperbolic-field{animation-duration:112s}
 body:not(.sobrio-mode) .math-visual{filter:brightness(1.18)}
 @media(max-width:768px){.geometry-layer.is-current{opacity:.5}}
+
+/* Debut record: quiet, drifting contours echo the artwork's reflected landscape. */
+.featured-record{margin:28px 0 40px;padding:30px 20px 26px;text-align:center;border:1px solid #b4d8cf30;border-radius:12px;background:radial-gradient(ellipse at 50% 45%,#93c6c219,transparent 68%),#121a1cbd}
+.featured-record-title{max-width:620px;margin:0 auto 30px;color:#eee9da;font-size:clamp(1.5rem,3vw,1.9rem);font-weight:400;line-height:1.25;text-wrap:balance}
+.featured-record-title span{display:block;margin-bottom:8px;color:#b4d8cf;font-size:.72em}
+.featured-record-frame{position:relative;isolation:isolate;container-type:inline-size;width:350px;max-width:100%;margin:0 auto;background:#181a1b}
+.featured-record-frame::before,.featured-record-frame::after{content:'';position:absolute;z-index:-1;pointer-events:none;border:1px solid #a4ceca70;inset:-7px;border-radius:10px 16px 12px 18px;animation:record-contour-drift 12s ease-in-out infinite alternate}
+.featured-record-frame::after{inset:-13px;border-color:#d8c89b40;border-radius:18px 10px 20px 12px;animation-delay:-6s;animation-direction:alternate-reverse}
+.featured-record-frame iframe{display:block;width:100%;max-width:350px;height:470px;height:calc(100cqw + 120px);border:0}
+.featured-record-note{max-width:570px;margin:30px auto 0;color:#b2b9b6;font-size:1.05rem;line-height:1.5;text-wrap:balance}
+.featured-record-note a{color:#c0e2da;text-decoration:underline;text-underline-offset:3px}
+.featured-record-note a:hover{color:#eee9da}
+.featured-record-note a:focus-visible{outline:2px solid #c0e2da;outline-offset:4px;border-radius:2px}
+@keyframes record-contour-drift{from{transform:translate3d(-2px,1px,0);border-radius:10px 16px 12px 18px;opacity:.5}to{transform:translate3d(2px,-1px,0);border-radius:18px 12px 20px 10px;opacity:.9}}
+body.sobrio-mode .featured-record-frame::before,body.sobrio-mode .featured-record-frame::after{animation:none;transform:none}
+@media(max-width:480px){.featured-record{padding:24px 18px;margin:24px 0 30px}.featured-record-title{margin-bottom:28px}.featured-record-note{font-size:1rem}}
+@media(prefers-reduced-motion:reduce){.featured-record-frame::before,.featured-record-frame::after{animation:none;transform:none}}
+
+@container(max-width:299px){.featured-record-frame iframe{height:calc(100cqw + 144px)}}
